@@ -1,0 +1,118 @@
+﻿@page "~/templates"
+@model TemplateListModel
+@{
+    ViewData["Title"] = "Template";
+    ViewData["Breadcrumb"] = Model.Breadcrumb;
+}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-table"></i>
+        Your Templates
+
+        <div style="float: right;">
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#uploadModal">
+                Upload
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            @{
+                if (Model.CurrentUser.Templates.Count > 0)
+                {
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Title</th> <!-- AND LINK -->
+                                <th>Download Source</th>
+                                <th># Of Uses</th>
+                                <th>Upload Date</th>
+                                <th>Last Use Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Models.Template template in Model.CurrentUser.Templates)
+                            {
+                                <tr>
+                                    <td><a href="/template?guid=@template.DocumentLink">@template.Title</a></td>
+                                    <td>
+                                        <form asp-page-handler="download" method="post" id="downloadForm">
+                                            <input hidden value="@template.DocumentLink" name="link" />
+                                            <a href="javascript:{}" onclick="document.getElementById('downloadForm').submit();">@template.DocumentLink</a>
+                                        </form>
+                                    </td>
+                                    <td>@template.Uses</td>
+                                    <td>@template.UploadDate</td>
+                                    @{ 
+                                        if(template.LastUsed.Equals(DateTime.MinValue))
+                                        {
+                                            <td>Not used yet!</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@template.LastUsed</td>
+                                        }
+                                    }
+                                    <td>
+                                        <form asp-page-handler="delete" method="post" onsubmit="return confirm('Are you sure you want to delete this template?');">
+                                            <input hidden value="@template.ID" name="template" />
+                                            <input type="submit" class="btn btn-danger" value="Delete" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <h5>Hmm... There is nothing here. Go ahead and upload a template!</h5>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Upload your Template</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" name="title" id="title" placeholder="Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Preview Image</label>
+                        <input type="file" class="form-control" name="image" id="image">
+                    </div>
+                    <div class="form-group">
+                        <label for="template">Template</label>
+                        <input type="file" class="form-control" name="template" id="template">
+                    </div>
+                    <div class="form-group">
+                        <label for="keywords">Keywords</label>
+                        <input type="text" class="form-control" name="keywords" id="keywords" placeholder="Short, detailed words seperated by commas work best here!">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" class="form-control" name="description" id="description">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

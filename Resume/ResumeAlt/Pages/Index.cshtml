@@ -1,0 +1,126 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+<!-- Navigation -->
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">ResuME</a>
+        @{
+            if (!string.IsNullOrEmpty(Model.UserEmail))
+            {
+                <div>
+                    <a class="btn btn-primary" href="/home">Home</a>
+                    <a class="btn btn-danger" href="/logout">Logout</a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a class="btn btn-primary" href="/signup">Sign up</a>
+                    <a class="btn btn-success" href="/login">Login</a>
+                </div>
+            }
+        }
+    </div>
+</nav>
+
+<!-- Masthead -->
+<header class="masthead text-white text-center">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            @{
+                if (!string.IsNullOrEmpty(Model.UserEmail))
+                {
+                    <div class="col-xl-9 mx-auto">
+                        <h1 class="mb-5">Welcome back! <br /> Click 'Home' to get started.</h1>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-xl-9 mx-auto">
+                        <h1 class="mb-5">Democratizing custom tailored resumes for the masses. <br /> Sign up here!</h1>
+                    </div>
+                    <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                        <form action="/signup" method="GET">
+                            <div class="form-row">
+                                <div class="col-12 col-md-9 mb-2 mb-md-0">
+                                    <input name="email" type="email" class="form-control form-control-lg" placeholder="Enter your email...">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <button type="submit" class="btn btn-block btn-lg btn-primary">Sign up!</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</header>
+
+<!-- Icons Grid -->
+<section class="features-icons bg-light text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="icon-settings m-auto text-primary"></i>
+                    </div>
+                    <h3>Custom Resume Templates</h3>
+                    <p class="lead mb-0">Anyone can build, share and get paid for templates uploaded to ResuME.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="icon-wrench m-auto text-primary"></i>
+                    </div>
+                    <h3>Resume Auto-Generation</h3>
+                    <p class="lead mb-0">Using your credentials, skills, and social media platforms, ResuME will generate a resume using any template.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="icon-credit-card m-auto text-primary"></i>
+                    </div>
+                    <h3>Free to Use, Get Paid for Creating</h3>
+                    <p class="lead mb-0">Watching a short ad while we make your resume, ad revenue will go directly to the creator of the template.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@{
+    if (string.IsNullOrEmpty(Model.UserEmail))
+    {
+        <!-- Call to Action -->
+        <section class="call-to-action text-white text-center">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-9 mx-auto">
+                        <h2 class="mb-4">Ready to get started? Sign up now!</h2>
+                    </div>
+                    <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                        <form action="/signup" method="GET">
+                            <div class="form-row">
+                                <div class="col-12 col-md-9 mb-2 mb-md-0">
+                                    <input name="email" type="email" class="form-control form-control-lg" placeholder="Enter your email...">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <button type="submit" class="btn btn-block btn-lg btn-primary">Sign up!</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+}

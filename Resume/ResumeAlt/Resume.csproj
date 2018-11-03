@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="EntityFramework" Version="6.2.0" />
+    <PackageReference Include="Sendgrid" Version="9.10.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="8.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\lib\bootstrap\css\bootstrap.css.map" />
+    <Content Remove="wwwroot\lib\bootstrap\css\bootstrap.min.css.map" />
+    <Content Remove="wwwroot\lib\bootstrap\js\bootstrap.bundle.js.map" />
+    <Content Remove="wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <Content Remove="wwwroot\lib\bootstrap\js\bootstrap.js.map" />
+    <Content Remove="wwwroot\lib\bootstrap\js\bootstrap.min.js.map" />
+    <Content Remove="wwwroot\lib\bootstrap\.bower.json" />
+    <Content Remove="wwwroot\lib\bootstrap\css\bootstrap.css" />
+    <Content Remove="wwwroot\lib\bootstrap\css\bootstrap.min.css" />
+    <Content Remove="wwwroot\lib\bootstrap\css\bootstrap-grid.css" />
+    <Content Remove="wwwroot\lib\bootstrap\css\bootstrap-grid.min.css" />
+    <Content Remove="wwwroot\lib\bootstrap\css\bootstrap-reboot.css" />
+    <Content Remove="wwwroot\lib\bootstrap\css\bootstrap-reboot.min.css" />
+    <Content Remove="wwwroot\lib\bootstrap\js\bootstrap.bundle.js" />
+    <Content Remove="wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Remove="wwwroot\lib\bootstrap\js\bootstrap.js" />
+    <Content Remove="wwwroot\lib\bootstrap\js\bootstrap.min.js" />
+    <Content Remove="Pages\Information\Contact.cshtml" />
+    <Content Remove="wwwroot\lib\chart.js\Chart.bundle.js" />
+    <Content Remove="wwwroot\lib\chart.js\Chart.bundle.min.js" />
+    <Content Remove="wwwroot\lib\chart.js\Chart.js" />
+    <Content Remove="wwwroot\lib\chart.js\Chart.min.js" />
+    <Content Remove="wwwroot\lib\vendor\datatables\dataTables.bootstrap4.css" />
+    <Content Remove="wwwroot\lib\vendor\datatables\dataTables.bootstrap4.js" />
+    <Content Remove="wwwroot\lib\vendor\datatables\dataTables.bootstrap4.min.css" />
+    <Content Remove="wwwroot\lib\vendor\datatables\dataTables.bootstrap4.min.js" />
+    <Content Remove="wwwroot\lib\vendor\datatables\jquery.dataTables.js" />
+    <Content Remove="wwwroot\lib\vendor\datatables\jquery.dataTables.min.js" />
+    <Content Remove="wwwroot\lib\datatables\dataTables.bootstrap4.css" />
+    <Content Remove="wwwroot\lib\datatables\dataTables.bootstrap4.js" />
+    <Content Remove="wwwroot\lib\datatables\dataTables.bootstrap4.min.css" />
+    <Content Remove="wwwroot\lib\datatables\dataTables.bootstrap4.min.js" />
+    <Content Remove="wwwroot\lib\datatables\jquery.dataTables.js" />
+    <Content Remove="wwwroot\lib\datatables\jquery.dataTables.min.js" />
+    <Content Remove="wwwroot\lib\jquery-easing\jquery.easing.compatibility.js" />
+    <Content Remove="wwwroot\lib\jquery-easing\jquery.easing.js" />
+    <Content Remove="wwwroot\lib\jquery-easing\jquery.easing.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.min.js.map" />
+    <None Include="..\..\SQL\RevenueHistory.sql">
+      <Link>SQL\RevenueHistory.sql</Link>
+    </None>
+    <None Include="..\..\SQL\Template.sql">
+      <Link>SQL\Template.sql</Link>
+    </None>
+    <None Include="..\..\SQL\TemplateHistory.sql">
+      <Link>SQL\TemplateHistory.sql</Link>
+    </None>
+    <None Include="..\..\SQL\UserDetail.sql">
+      <Link>SQL\UserDetail.sql</Link>
+    </None>
+    <None Include="..\..\SQL\Users.sql">
+      <Link>SQL\Users.sql</Link>
+    </None>
+    <None Include="wwwroot\lib\chart.js\Chart.bundle.js" />
+    <None Include="wwwroot\lib\chart.js\Chart.bundle.min.js" />
+    <None Include="wwwroot\lib\chart.js\Chart.js" />
+    <None Include="wwwroot\lib\chart.js\Chart.min.js" />
+    <None Include="wwwroot\lib\datatables\dataTables.bootstrap4.css" />
+    <None Include="wwwroot\lib\datatables\dataTables.bootstrap4.js" />
+    <None Include="wwwroot\lib\datatables\dataTables.bootstrap4.min.css" />
+    <None Include="wwwroot\lib\datatables\dataTables.bootstrap4.min.js" />
+    <None Include="wwwroot\lib\datatables\jquery.dataTables.js" />
+    <None Include="wwwroot\lib\datatables\jquery.dataTables.min.js" />
+    <None Include="wwwroot\lib\jquery-easing\jquery.easing.compatibility.js" />
+    <None Include="wwwroot\lib\jquery-easing\jquery.easing.js" />
+    <None Include="wwwroot\lib\jquery-easing\jquery.easing.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\bootstrap\" />
+    <Folder Include="Models\" />
+    <Folder Include="Pages\Info\" />
+    <Folder Include="Pages\User\" />
+    <Folder Include="Pages\Home\" />
+    <Folder Include="Configuration\" />
+    <Folder Include="wwwroot\lib\datatables\" />
+    <Folder Include="wwwroot\lib\jquery-easing\" />
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="wwwroot\_Layout.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Controllers\CloudFile.cs" />
+  </ItemGroup>
+</Project>

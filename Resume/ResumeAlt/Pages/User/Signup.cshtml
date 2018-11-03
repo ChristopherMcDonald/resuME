@@ -1,0 +1,51 @@
+﻿@page "~/signup"
+@model SignupModel
+@{
+    ViewData["Title"] = "Sign Up";
+}
+<!-- Navigation -->
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">ResuME</a>
+        <div>
+            <a class="btn btn-primary" href="/">Home</a>
+            <a class="btn btn-success" href="/login">Login</a>
+        </div>
+    </div>
+</nav>
+<!-- Masthead -->
+<header class="masthead text-white">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-9 mx-auto text-center">
+                <h1 class="mb-5">Want to make applying easier? <br /> Start Here.</h1>
+            </div>
+            <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                <form method="POST">
+                    <div class="form-row login">
+                        <div class="col-12 mb-2 mb-md-0">
+                            <label for="email">Email Address</label>
+                            <input name="email" class="form-control form-control-lg" placeholder="Email" value="@Model.Email">
+                        </div>
+                        <div class="col-12 mb-2 mb-md-0">
+                            <label for="firstname">First Name</label>
+                            <input name="firstname" class="form-control form-control-lg" placeholder="First Name">
+                        </div>
+                        <div class="col-12 mb-2 mb-md-0">
+                            <label for="lastname">Last Name</label>
+                            <input name="lastname" class="form-control form-control-lg" placeholder="Last Name">
+                        </div>
+                        <div class="col-12 mb-2 mb-md-0">
+                            <label for="password">Password</label>
+                            <input name="password" type="password" class="form-control form-control-lg" placeholder="NotPassword">
+                        </div>
+                        <div class="col-12 col-md-3" style="margin-top:10px;">
+                            <button type="submit" class="btn btn-block btn-lg btn-primary">Sign up!</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>

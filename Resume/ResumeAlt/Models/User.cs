@@ -14,6 +14,7 @@ namespace Resume.Models
             this.Details = new HashSet<UserDetail>();
             this.Transactions = new HashSet<CashHistory>();
             this.Favorites = new HashSet<Favourite>();
+            this.TemplateUseHistory = new HashSet<TemplateHistory>();
         }
 
         [Key]
@@ -30,5 +31,6 @@ namespace Resume.Models
         public ICollection<UserDetail> Details { get; set; }
         public ICollection<CashHistory> Transactions { get; set; }
         public ICollection<Favourite> Favorites { get; set; }
+        public ICollection<TemplateHistory> TemplateUseHistory { get; set; }
     }
 }

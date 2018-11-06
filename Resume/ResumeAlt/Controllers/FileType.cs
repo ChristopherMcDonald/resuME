@@ -15,6 +15,11 @@ namespace Resume.Controllers
         /// <summary>
         /// Images that show what the template looks like filled out
         /// </summary>
-        Images
+        Images,
+
+        /// <summary>
+        /// The generated templates
+        /// </summary>
+        Generated
     }
 }

@@ -35,9 +35,9 @@ namespace Resume.Pages.Home
             Breadcrumb.AddLast(Tuple.Create<string, string>("Templates", "/templates"));
         }
 
-        public IActionResult OnGet(string guid)
+        public IActionResult OnGet(string id)
         {
-            Template template = this._context.Set<Template>().Where(temp => temp.DocumentLink.Equals(guid)).FirstOrDefault();
+            Template template = this._context.Set<Template>().Where(temp => temp.ID.Equals(id)).FirstOrDefault();
             if (template == null) {
                 return Redirect("/templates");
             }

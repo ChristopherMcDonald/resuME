@@ -36,7 +36,7 @@
                             @foreach (Models.Template template in Model.CurrentUser.Templates)
                             {
                                 <tr>
-                                    <td><a href="/template?guid=@template.DocumentLink">@template.Title</a></td>
+                                    <td><a href="/template?id=@template.ID">@template.Title</a></td>
                                     <td>
                                         <form asp-page-handler="download" method="post" id="downloadForm">
                                             <input hidden value="@template.DocumentLink" name="link" />

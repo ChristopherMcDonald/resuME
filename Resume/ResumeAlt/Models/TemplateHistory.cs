@@ -13,6 +13,7 @@ namespace Resume.Models
         public int TemplateId { get; set; }
         public int UserId { get; set; }
         public DateTime UseDate { get; set; }
+        public string GeneratedLink { get; set; }
 
         public static TemplateHistory MinOr(TemplateHistory that) => (that ?? MinTime);
     }

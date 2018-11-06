@@ -1,14 +1,13 @@
-﻿@page "~/home"
-@model HomeModel
+﻿@page "~/favourites"
+@model FavouritesModel
 @{
     ViewData["Title"] = "Home";
     ViewData["Breadcrumb"] = Model.Breadcrumb;
 }
-
 <div class="card mb-3">
     <div class="card-header">
         <i class="fas fa-table"></i>
-        Your History
+        Your Favourites
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -19,22 +18,20 @@
                         <thead>
                             <tr>
                                 <th>Title</th> <!-- AND LINK -->
-                                <th>Generated Document</th>
-                                <th>Use Date</th>
+                                <th>Remove</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (Models.TemplateHistory history in Model.CurrentUser.TemplateUseHistory)
+                            @foreach (Models.Favourite fav in Model.CurrentUser.Favorites)
                             {
                                 <tr>
-                                    <td><a href="/template?id=@history.TemplateId">@Model.GetTitleFromId(history.TemplateId)</a></td> <!-- TODO get the title of template -->
+                                    <td><a href="/template?id=@fav.TemplateId">@Model.GetTitleFromId(fav.TemplateId)</a></td> <!-- TODO get the title of template -->
                                     <td>
-                                        <form asp-page-handler="download" method="post" id="downloadForm">
-                                            <input hidden value="@history.TemplateUseId" name="link" />
-                                            <a href="javascript:{}" onclick="document.getElementById('downloadForm').submit();">@history.TemplateUseId</a>
+                                        <form asp-page-handler="delete" method="post" onsubmit="return confirm('Are you sure you want to remove this template from your favourites/?');">
+                                            <input hidden value="@fav.TemplateId" name="template" />
+                                            <input type="submit" class="btn btn-danger" value="Remove" />
                                         </form>
                                     </td>
-                                    <td>@history.UseDate</td>
                                 </tr>
                             }
                         </tbody>
@@ -42,10 +39,9 @@
                 }
                 else
                 {
-                    <h5>Hmm... There is nothing here. Go ahead and search for templates to use!</h5>
+                    <h5>Hmm... There is nothing here. Go ahead and search for templates to favourite!</h5>
                 }
             }
         </div>
     </div>
 </div>
-

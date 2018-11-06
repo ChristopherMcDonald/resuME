@@ -98,7 +98,6 @@ namespace Resume.Pages.Home
                 }
 
                 // TODO catch errors, return useful error
-
                 Template toAdd = new Template()
                 {
                     UploadDate = DateTime.UtcNow,
@@ -107,6 +106,7 @@ namespace Resume.Pages.Home
                     Keywords = keywords,
                     Description = description
                 };
+
                 using (LocalFile localFile = await LocalFile.Create(template)) {
                     // TODO try catch this
                     await azureFileController.UploadFile(FileType.Templates, localFile.LocalPath);

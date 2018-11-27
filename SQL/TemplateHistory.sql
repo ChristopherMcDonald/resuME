@@ -2,7 +2,8 @@ CREATE TABLE dbo.TemplateHistory (
 	ID int NOT NULL IDENTITY(1,1),
 	TemplateId int NOT NULL,
 	UserId int NOT NULL,
-	DateUsed datetime NOT NULL
+	DateUsed datetime NOT NULL,
+    GeneratedLink nvarchar(max) NOT NULL
 );
 
 ALTER TABLE dbo.TemplateHistory ADD CONSTRAINT PK_TemplateHistory_ID PRIMARY KEY (ID);

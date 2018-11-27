@@ -15,7 +15,7 @@ namespace Resume.Pages.Home
 {
     public class TemplateModel : PageModel
     {
-        private readonly Models.AppContext _context;
+        private readonly Models.AppContext context;
         private readonly AzureFileController azureFileController;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Resume.Pages.Home
         public string GetPreviewImageLink() => azureFileController.GetShareableImageLink(this.Template.PreviewImageLink);
 
         public TemplateModel(IOptions<Configuration.CloudStorage> cloudSettings, Models.AppContext app) {
-            this._context = app;
+            this.context = app;
             azureFileController = new AzureFileController(cloudSettings.Value.ConnectionString);
 
             this.Breadcrumb = new LinkedList<Tuple<string, string>>();
@@ -35,9 +35,9 @@ namespace Resume.Pages.Home
             Breadcrumb.AddLast(Tuple.Create<string, string>("Templates", "/templates"));
         }
 
-        public IActionResult OnGet(string id)
+        public IActionResult OnGet(int id)
         {
-            Template template = this._context.Set<Template>().Where(temp => temp.ID.Equals(id)).FirstOrDefault();
+            Template template = this.context.Set<Template>().Where(temp => temp.ID.Equals(id)).FirstOrDefault();
             if (template == null) {
                 return Redirect("/templates");
             }
@@ -49,7 +49,7 @@ namespace Resume.Pages.Home
 
         public async Task<IActionResult> OnPost(IFormFile image, IFormFile template, string guid, string title, string keywords, string description)
         {
-            Template temp = this._context.Set<Template>().Where(t => t.DocumentLink.Equals(guid)).FirstOrDefault();
+            Template temp = this.context.Set<Template>().Where(t => t.DocumentLink.Equals(guid)).FirstOrDefault();
             if (temp == null)
             {
                 return Redirect("/templates");
@@ -74,8 +74,8 @@ namespace Resume.Pages.Home
             temp.Title = title;
             temp.Description = description;
             temp.Keywords = keywords;
-            await _context.SaveChangesAsync();
-            return OnGet(guid);
+            await context.SaveChangesAsync();
+            return OnGet(temp.ID);
         }
     }
 }

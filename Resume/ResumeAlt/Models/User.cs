@@ -11,10 +11,16 @@ namespace Resume.Models
         public User()
         {
             this.Templates = new HashSet<Template>();
-            this.Details = new HashSet<UserDetail>();
             this.Transactions = new HashSet<CashHistory>();
             this.Favorites = new HashSet<Favourite>();
             this.TemplateUseHistory = new HashSet<TemplateHistory>();
+
+            // User Details
+            this.WorkDetails = new HashSet<WorkDetail>();
+            this.ProjectDetails = new HashSet<ProjectDetail>();
+            this.CertDetails = new HashSet<CertDetail>();
+            this.EducationDetails = new HashSet<EducationDetail>();
+            this.SkillDetails = new HashSet<SkillDetail>();
         }
 
         [Key]
@@ -28,9 +34,18 @@ namespace Resume.Models
         public bool Verified { get; set; }
 
         public ICollection<Template> Templates { get; set; }
-        public ICollection<UserDetail> Details { get; set; }
         public ICollection<CashHistory> Transactions { get; set; }
         public ICollection<Favourite> Favorites { get; set; }
         public ICollection<TemplateHistory> TemplateUseHistory { get; set; }
+
+        // User Details
+        public ICollection<WorkDetail> WorkDetails { get; set; }
+        public ICollection<ProjectDetail> ProjectDetails { get; set; }
+        public ICollection<CertDetail> CertDetails { get; set; }
+        public ICollection<EducationDetail> EducationDetails { get; set; }
+        public ICollection<SkillDetail> SkillDetails { get; set; }
+
+        [NotMapped]
+        public ICollection<object> Details => new List<object>() { WorkDetails, ProjectDetails, CertDetails, EducationDetails, SkillDetails };
     }
 }

@@ -67,9 +67,6 @@
     <None Include="..\..\SQL\TemplateHistory.sql">
       <Link>SQL\TemplateHistory.sql</Link>
     </None>
-    <None Include="..\..\SQL\UserDetail.sql">
-      <Link>SQL\UserDetail.sql</Link>
-    </None>
     <None Include="..\..\SQL\Users.sql">
       <Link>SQL\Users.sql</Link>
     </None>

@@ -1,0 +1,23 @@
+﻿@page "~/search"
+@model SearchModel
+@{
+    ViewData["Title"] = "Search";
+    ViewData["Breadcrumb"] = Model.Breadcrumb;
+}
+<div>
+    @{ 
+        foreach(Models.Template template in Model.Templates)
+        {
+            <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+                <div class="card-body d-flex flex-column align-items-start">
+                    <a href="/templates/use?id=@template.ID&query=@Request.Query["query"]"><strong class="d-inline-block mb-2 text-primary">@template.Title</strong></a>
+                    <div class="mb-1 text-muted">@template.Keywords</div>
+                    <p class="card-text mb-auto">@template.Description</p>
+                </div>
+                <div style="width:400px;">
+                    <img class="card-img-right flex-auto d-none d-lg-block" data-src="@Model.azureFileController.GetShareableImageLink(template.PreviewImageLink)" alt="Thumbnail [200x250]" src="@Model.azureFileController.GetShareableImageLink(template.PreviewImageLink)" data-holder-rendered="true" style="max-width:100%;height:auto;">
+                </div>
+            </div>
+        }
+    }
+</div>

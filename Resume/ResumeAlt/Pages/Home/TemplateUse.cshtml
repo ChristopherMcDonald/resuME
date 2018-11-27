@@ -1,0 +1,17 @@
+﻿@page "~/templates/use"
+@model TemplateUseModel
+@{
+    ViewData["Title"] = "Template View";
+    ViewData["Breadcrumb"] = Model.Breadcrumb;
+}
+<header class="bg-image-full resume-background" style="height:500px; width:auto; background-image: url('@Model.azureFileController.GetShareableImageLink(Model.Template.PreviewImageLink)');">
+    <!-- TODO make CSS better, maybe in ViewData? -->
+    <h1 style="margin-left:20px; margin-top: 20px; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000; font-size: 5em;">@Model.Template.Title</h1>
+</header>
+<section class="py-5" style="height: 400px;">
+    <div class="container">
+        <h1>@Model.Template.Title</h1>
+        <p class="lead">@Model.Template.Keywords</p>
+        <p>@Model.Template.Description</p>
+    </div>
+</section>

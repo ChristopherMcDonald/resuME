@@ -383,3 +383,10 @@ body.sidebar-toggled footer.sticky-footer {
         width: calc(100% - 90px)
     }
 }
+
+.resume-background {
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: top;
+    background-size: cover;
+}

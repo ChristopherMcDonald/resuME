@@ -84,20 +84,18 @@ namespace Resume.Pages.Home
             }
             else
             {
-                if (!acceptableImageExtensions.Contains(Path.GetExtension(image.FileName))) {
-                    // TODO set and use error
-                    this.Error = "";
+                if (!acceptableImageExtensions.Contains(Path.GetExtension(image.FileName)))
+                {
+                    this.Error = "Only JPG and PNG images can be uploaded at this time.";
                     return Page();
                 } 
 
                 if (!acceptableTemplateExtensions.Contains(Path.GetExtension(template.FileName)))
                 {
-                    // TODO set error
-                    this.Error = "";
+                    this.Error = "Only DOCX files can be uploaded at this time.";
                     return Page();
                 }
 
-                // TODO catch errors, return useful error
                 Template toAdd = new Template()
                 {
                     UploadDate = DateTime.UtcNow,
@@ -107,30 +105,48 @@ namespace Resume.Pages.Home
                     Description = description
                 };
 
-                using (LocalFile localFile = await LocalFile.Create(template)) {
-                    // TODO try catch this
-                    await azureFileController.UploadFile(FileType.Templates, localFile.LocalPath);
-                    toAdd.DocumentLink = Path.GetFileName(localFile.LocalPath);
-                }
-
-                using (LocalFile localFile = await LocalFile.Create(image))
+                LocalFile localFile = LocalFile.Create(template);
+                try
                 {
-                    // TODO try catch this
-                    await azureFileController.UploadFile(FileType.Images, localFile.LocalPath);
-                    toAdd.PreviewImageLink = Path.GetFileName(localFile.LocalPath);
+                    await azureFileController.UploadFile(FileType.Templates, localFile.LocalPath, localFile.Stream);
                 }
+                catch (Exception e)
+                {
+                    this.Error = "Something bad happened during uploading... Please try again later.";
+                    System.Diagnostics.Trace.TraceError("Error during uploading:" + e.ToString());
+                    await azureFileController.DeleteFile(FileType.Templates, Path.GetFileName(localFile.LocalPath));
+                    return Page();
+                }
+                toAdd.DocumentLink = Path.GetFileName(localFile.LocalPath);
+                
+                LocalFile localFile2 = LocalFile.Create(image);
+                try
+                {
+                    await azureFileController.UploadFile(FileType.Images, localFile2.LocalPath, localFile2.Stream);
+                }
+                catch (Exception e)
+                {
+                    this.Error = "Something bad happened during uploading... Please try again later.";
+                    System.Diagnostics.Trace.TraceError("Error during uploading:" + e.ToString());
+
+                    // won't save record, need to clean up AzureFileStorage
+                    await azureFileController.DeleteFile(FileType.Images, Path.GetFileName(localFile2.LocalPath));
+                    await azureFileController.DeleteFile(FileType.Templates, toAdd.DocumentLink);
+
+                    return Page();
+                }
+                toAdd.PreviewImageLink = Path.GetFileName(localFile2.LocalPath);
 
                 this.CurrentUser.Templates.Add(toAdd);
                 _context.SaveChangesAsync().Wait();
 
-                // TODO return status
                 return Redirect("~/templates");
             }
         }
 
         public async Task<IActionResult> OnPostDelete(string template) 
         {
-            int templateId = int.Parse(template);
+            Guid templateId = new Guid(template);
             string userEmail = this.HttpContext.User.Identity.Name;
             if (string.IsNullOrEmpty(userEmail))
             {

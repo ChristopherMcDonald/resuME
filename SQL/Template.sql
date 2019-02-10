@@ -1,7 +1,7 @@
 CREATE TABLE Template
 (
-	ID INT IDENTITY(1,1) NOT NULL,
-	UserId INT NOT NULL,
+	ID char(32) NOT NULL,
+	UserId char(32) NOT NULL,
 	DocumentLink NVARCHAR(max) NOT NULL,
 	Title NVARCHAR(100) NOT NULL,
 	PreviewImageLink NVARCHAR(max) NOT NULL,

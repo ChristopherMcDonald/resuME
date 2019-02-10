@@ -19,6 +19,8 @@ namespace Resume.Pages
     {
         private readonly Models.AppContext _context;
 
+        public string Email { get; set; }
+
         public string Error { get; set; }
 
         public LoginModel(Models.AppContext app) {
@@ -40,6 +42,12 @@ namespace Resume.Pages
             try {
                 User user = _context.Set<User>().Where(entry => entry.Email.Equals(request.Email)).First();
 
+                if (!user.Verified)
+                {
+                    this.Error = "Check your email! We sent you one to verify your email.";
+                    return Page();
+                }
+
                 // Extract the bytes
                 byte[] hashBytes = Convert.FromBase64String(user.PasswordHash);
 
@@ -53,12 +61,13 @@ namespace Resume.Pages
 
                 // Compare the results
                 for (int i = 0; i < 20; i++)
+                {
                     if (hashBytes[i + 16] != hash[i])
                     {
-                        this.Error = "Wrong email and password combination.";
+                        this.Error = "Wrong email and password combination, try again";
                         return Page();
                     }
-
+                }
 
                 var claims = new List<Claim>
                 {

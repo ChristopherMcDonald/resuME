@@ -24,13 +24,13 @@ namespace Resume.Models
         }
 
         [Key]
-        public int ID { get; set; }
+        public Guid ID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public double AvailableCash { get; set; }
         public string PasswordHash { get; set; }
-        public string VerifyString { get; set; }
+        public Guid VerifyString { get; set; }
         public bool Verified { get; set; }
 
         public ICollection<Template> Templates { get; set; }

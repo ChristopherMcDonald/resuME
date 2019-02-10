@@ -7,8 +7,8 @@ namespace Resume.Models
         {
         }
 
-        public int ID { get; set; }
-        public int UserId { get; set; }
+        public Guid ID { get; set; }
+        public Guid UserId { get; set; }
         public DateTime Event { get; set; }
         public int TemplateUseId { get; set; }
         public string Action { get; set; }

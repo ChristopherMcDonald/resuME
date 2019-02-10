@@ -13,8 +13,8 @@ namespace Resume.Models
             this.Favourites = new HashSet<Favourite>();
         }
 
-        public int ID { get; set; }
-        public int UserID { get; set; }
+        public Guid ID { get; set; }
+        public Guid UserID { get; set; }
         public string DocumentLink { get; set; }
         public string Title { get; set; }
         public string PreviewImageLink { get; set; }

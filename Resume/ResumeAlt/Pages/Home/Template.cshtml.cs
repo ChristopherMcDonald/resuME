@@ -24,6 +24,9 @@ namespace Resume.Pages.Home
         public LinkedList<Tuple<string, string>> Breadcrumb;
 
         public Template Template { get; set; }
+
+        public User CurrentUser { get; private set; }
+
         public string GetPreviewImageLink() => azureFileController.GetShareableImageLink(this.Template.PreviewImageLink);
 
         public TemplateModel(IOptions<Configuration.CloudStorage> cloudSettings, Models.AppContext app) {
@@ -35,15 +38,29 @@ namespace Resume.Pages.Home
             Breadcrumb.AddLast(Tuple.Create<string, string>("Templates", "/templates"));
         }
 
-        public IActionResult OnGet(int id)
+        public IActionResult OnGet(string id)
         {
-            Template template = this.context.Set<Template>().Where(temp => temp.ID.Equals(id)).FirstOrDefault();
-            if (template == null) {
-                return Redirect("/templates");
+            string userEmail = this.HttpContext.User.Identity.Name;
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Redirect("~/login");
+            }
+            else
+            {
+                this.CurrentUser = context.Set<Models.User>().Where(entry => entry.Email.Equals(userEmail)).FirstOrDefault();
+                context.Entry(this.CurrentUser).Collection(u => u.Templates).Load();
+
+                Template template = this.context.Set<Template>().Where(temp => temp.ID.Equals(new Guid(id))).FirstOrDefault();
+                if (template == null || !this.CurrentUser.Templates.Any(t => t.ID.Equals(template.ID)))
+                {
+                    return Redirect("/templates");
+                }
+
+
+                this.Template = template;
+                Breadcrumb.AddLast(Tuple.Create<string, string>(template.Title, null));
             }
 
-            this.Template = template;
-            Breadcrumb.AddLast(Tuple.Create<string, string>(template.Title, null));
             return Page();
         }
 
@@ -55,27 +72,51 @@ namespace Resume.Pages.Home
                 return Redirect("/templates");
             }
 
+            string toDeleteImage = null, toDeleteDocument = null;
+
             if(image != null) {
-                using(LocalFile localFile = await LocalFile.Create(image)) {
-                    await azureFileController.UploadFile(FileType.Images, localFile.LocalPath);
+                    LocalFile localFile = LocalFile.Create(image);
+                    await azureFileController.UploadFile(FileType.Images, localFile.LocalPath, localFile.Stream);
+                    toDeleteImage = temp.PreviewImageLink;
                     temp.PreviewImageLink = Path.GetFileName(localFile.LocalPath);
-                }
             }
 
             if (template != null)
             {
-                using (LocalFile localFile = await LocalFile.Create(template))
-                {
-                    await azureFileController.UploadFile(FileType.Templates, localFile.LocalPath);
+                    LocalFile localFile = LocalFile.Create(template);
+                    await azureFileController.UploadFile(FileType.Templates, localFile.LocalPath, localFile.Stream);
+                    toDeleteDocument = temp.DocumentLink;
                     temp.DocumentLink = Path.GetFileName(localFile.LocalPath);
-                }
             }
 
             temp.Title = title;
             temp.Description = description;
             temp.Keywords = keywords;
             await context.SaveChangesAsync();
-            return OnGet(temp.ID);
+
+            if (!string.IsNullOrEmpty(toDeleteDocument))
+            {
+                try
+                {
+                    await azureFileController.DeleteFile(FileType.Templates, toDeleteDocument);
+                } catch (Exception e) {
+                    System.Diagnostics.Trace.TraceError(string.Format("Deleting old Document failed. Guid: {0}. Stack: {1}", toDeleteDocument, e.StackTrace));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(toDeleteImage))
+            {
+                try
+                {
+                    await azureFileController.DeleteFile(FileType.Images, toDeleteImage);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceError(string.Format("Deleting old Image failed. Guid: {0}. Stack: {1}", toDeleteImage, e.StackTrace));
+                }
+            }
+
+            return OnGet(temp.ID.ToString());
         }
     }
 }

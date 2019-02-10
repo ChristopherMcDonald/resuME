@@ -10,6 +10,10 @@ namespace Resume.Controllers
     public class AzureFileController
     {
         private readonly CloudStorageAccount cloud;
+
+        /// <summary>
+        /// The global storage key. Used for read access 
+        /// </summary>
         private readonly string GlobalStorageKey = "?sv=2017-11-09&ss=f&srt=sco&sp=r&se=9999-11-04T04:37:37Z&st=2018-11-03T19:37:37Z&spr=https&sig=4SXBqGuFDzsDTmu1uVVLXllghIhYUNxA0QeuV7Eg9xc%3D";
 
         /// <summary>
@@ -41,21 +45,17 @@ namespace Resume.Controllers
         /// <summary>
         /// Uploads the file.
         /// </summary>
-        /// <returns>The file.</returns>
-        /// <param name="type">What type of File is being retrieved</param>
-        /// <param name="path">Where the file is located locally</param>
-        public async Task UploadFile(FileType type, string path) {
-            // TODO shrink file
-            // TODO catch exceptions, log failure and return false?
+        /// <param name="type">Type of file being uploaded</param>
+        /// <param name="path">File name to upload to</param>
+        /// <param name="s">Stream to upload</param>
+        public async Task UploadFile(FileType type, string path, Stream s)
+        {
             CloudFileDirectory root = cloud.CreateCloudFileClient()
                                            .GetShareReference(type.ToString().ToLower())
                                            .GetRootDirectoryReference();
 
-            CloudFile cloudFile = root.GetFileReference(Path.GetFileName(path));
-            using (FileStream fs = new FileInfo(path).OpenRead())
-            {
-                await cloudFile.UploadFromStreamAsync(fs);
-            }
+            CloudFile cloudFile = root.GetFileReference(Path.GetFileNameWithoutExtension(path));
+            await cloudFile.UploadFromStreamAsync(s);
         }
 
         /// <summary>
@@ -63,14 +63,26 @@ namespace Resume.Controllers
         /// </summary>
         /// <returns>The file</returns>
         /// <param name="type">Type of file being deleted</param>
-        public async Task DeleteFile(FileType type, string guid) {
-            // TODO catch exceptions, log failure and return false?
-            CloudFileDirectory root = cloud.CreateCloudFileClient()
+        public async Task<bool> DeleteFile(FileType type, string guid) {
+            try
+            {
+                CloudFileDirectory root = cloud.CreateCloudFileClient()
                                            .GetShareReference(type.ToString().ToLower())
                                            .GetRootDirectoryReference();
 
-            CloudFile cloudFile = root.GetFileReference(Path.GetFileName(guid));
-            await cloudFile.DeleteAsync();
+                CloudFile cloudFile = root.GetFileReference(Path.GetFileName(guid));
+                if(cloudFile != null)
+                {
+                    await cloudFile.DeleteAsync();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.TraceWarning("Exception during deleting file: " + e.ToString());
+            }
+
+            return false;
         }
 
         /// <summary>

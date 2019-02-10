@@ -75,6 +75,8 @@ namespace Resume
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseMvc();
+            app.UseStatusCodePagesWithRedirects("/error/{0}");
+
         }
     }
 }

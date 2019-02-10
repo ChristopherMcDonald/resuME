@@ -29,9 +29,9 @@ namespace Resume.Pages
                 return Redirect("/Home");
             }
 
-            User user = _context.Set<User>().Where(entry => entry.Email.Equals(email)).FirstOrDefault();
+            Models.User user = _context.Set<Models.User>().Where(entry => entry.Email.Equals(email)).FirstOrDefault();
 
-            if (user != null && user.VerifyString.Equals(guid))
+            if (user != null && user.VerifyString.Equals(new Guid(guid)))
             {
                 user.Verified = true;
                 _context.Update(user);

@@ -14,7 +14,7 @@ namespace Resume.Pages.Home
     {
         private readonly Models.AppContext _context;
 
-        public User CurrentUser { get; set; }
+        public Models.User CurrentUser { get; set; }
 
         /// <summary>
         /// List of (Links,LinkText)
@@ -34,12 +34,12 @@ namespace Resume.Pages.Home
             if (string.IsNullOrEmpty(userEmail)) {
                 return Redirect("~/login");
             } else {
-                this.CurrentUser = _context.Set<User>().Where(entry => entry.Email.Equals(userEmail)).FirstOrDefault();
+                this.CurrentUser = _context.Set<Models.User>().Where(entry => entry.Email.Equals(userEmail)).FirstOrDefault();
                 return Page();
             }
         }
 
-        public string GetTitleFromId(int templateId)
+        public string GetTitleFromId(Guid templateId)
         {
             return _context.Set<Template>().Where(entry => entry.ID.Equals(templateId)).First().Title;
         }

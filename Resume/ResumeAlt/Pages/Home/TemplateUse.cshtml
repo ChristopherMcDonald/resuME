@@ -8,10 +8,65 @@
     <!-- TODO make CSS better, maybe in ViewData? -->
     <h1 style="margin-left:20px; margin-top: 20px; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000; font-size: 5em;">@Model.Template.Title</h1>
 </header>
-<section class="py-5" style="height: 400px;">
+<section class="py-5">
     <div class="container">
+        @{ 
+            if (Model.CurrentUser.Favorites.Select(fav => fav.TemplateId).Contains(Model.Template.ID))
+            {
+                <i class="fas fa-heart fa-3x"></i>
+            }
+            else
+            {
+                <form asp-page-handler="favorite" method="post" id="fav">
+                    <input type="hidden" name="id" value="@Model.Template.ID" />
+                    <input type="hidden" name="query" value="@Request.Query["query"]" />
+                    <i class="far fa-heart fa-3x" onclick="document.getElementById('fav').submit();"></i>
+                </form>
+            }
+        }
         <h1>@Model.Template.Title</h1>
         <p class="lead">@Model.Template.Keywords</p>
         <p>@Model.Template.Description</p>
+    </div>
+</section>
+<section class="py-5">
+    <div class="container">
+        <form asp-page-handler="use" method="post" id="use">
+            <h1>Skill Selection</h1>
+            <h2>Certificate</h2>
+            <input type="hidden" name="id" value="@Model.Template.ID" />
+
+            @foreach(Models.CertDetail cert in Model.CurrentUser.CertDetails)
+            {
+                <h5 style="display:inline-block;">@cert.Name</h5>
+                <input type="checkbox" id="@cert.ID" name="@cert.ID" />
+            }
+            <h2>Education</h2>
+            @foreach(Models.EducationDetail edu in Model.CurrentUser.EducationDetails)
+            {
+                <h5 style="display:inline-block;">@edu.Name</h5>
+                <input type="checkbox" id="@edu.ID" name="@edu.ID" />
+            }
+            <h2>Work</h2>
+            @foreach(Models.WorkDetail work in Model.CurrentUser.WorkDetails)
+            {
+                <h5 style="display:inline-block;">@work.Company - @work.Title</h5>
+                <input type="checkbox" id="@work.ID" name="@work.ID" />
+            }
+            <h2>Projects</h2>
+            @foreach(Models.ProjectDetail proj in Model.CurrentUser.ProjectDetails) 
+            {
+                <h5  style="display:inline-block;">@proj.Title</h5>
+                <input type="checkbox" id="@proj.ID" name="@proj.ID" />
+            }
+            <h2>Skills</h2>
+            @foreach(Models.SkillDetail skill in Model.CurrentUser.SkillDetails)
+            {
+                <h5 style="display:inline-block;">@skill.Name</h5>
+                <input type="checkbox" id="@skill.ID" name="@skill.ID" />
+            }
+            <br>
+            <input type="submit" class="btn btn-success">
+        </form>
     </div>
 </section>

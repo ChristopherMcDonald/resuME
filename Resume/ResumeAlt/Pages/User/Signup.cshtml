@@ -21,6 +21,14 @@
             <div class="col-xl-9 mx-auto text-center">
                 <h1 class="mb-5">Want to make applying easier? <br /> Start Here.</h1>
             </div>
+            @{
+                if (!string.IsNullOrEmpty(Model.Error))
+                {
+                    <div class="col-md-10 col-lg-8 col-xl-7 mx-auto alert alert-danger">
+                        <strong>Error:</strong> @Model.Error
+                    </div>
+                }
+            }
             <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                 <form method="POST">
                     <div class="form-row login">

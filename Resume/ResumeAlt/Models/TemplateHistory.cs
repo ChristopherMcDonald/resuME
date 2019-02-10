@@ -9,9 +9,9 @@ namespace Resume.Models
         private static TemplateHistory MinTime => new TemplateHistory() { UseDate = DateTime.MinValue };
 
         [Key]
-        public int TemplateUseId { get; set; }
-        public int TemplateId { get; set; }
-        public int UserId { get; set; }
+        public Guid TemplateUseId { get; set; }
+        public Guid TemplateId { get; set; }
+        public Guid UserId { get; set; }
         public DateTime UseDate { get; set; }
         public string GeneratedLink { get; set; }
 

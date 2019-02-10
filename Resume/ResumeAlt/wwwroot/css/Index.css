@@ -16,7 +16,7 @@ h1, h2, h3, h4, h5, h6 {
 header.masthead {
     position: relative;
     background-color: #343a40;
-    background: url(../images/bg-masthead.jpg) no-repeat center center;
+    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ),url(../images/splash-desk.jpeg) no-repeat center center;
     background-size: cover;
     padding-top: 8rem;
     padding-bottom: 8rem
@@ -101,10 +101,10 @@ header.masthead {
 .call-to-action {
     position: relative;
     background-color: #343a40;
-    background: url(../images/bg-masthead.jpg) no-repeat center center;
+    background: url(../images/bg-call.jpeg) no-repeat center center;
     background-size: cover;
     padding-top: 7rem;
-    padding-bottom: 7rem
+    padding-bottom: 3rem;
 }
 
     .call-to-action .overlay {

@@ -50,6 +50,13 @@
     <Content Remove="wwwroot\lib\jquery-easing\jquery.easing.compatibility.js" />
     <Content Remove="wwwroot\lib\jquery-easing\jquery.easing.js" />
     <Content Remove="wwwroot\lib\jquery-easing\jquery.easing.min.js" />
+    <Content Remove="wwwroot\images\photo-1521020773588-3b28297b1e70.jpeg" />
+    <Content Remove="wwwroot\images\splash-desk.jpeg" />
+    <Content Remove="wwwroot\images\photo-1504805572947-34fad45aed93.jpeg" />
+    <Content Remove="wwwroot\images\bg-call.jpeg" />
+    <Content Remove="wwwroot\js\sb-admin.min.js" />
+    <Content Remove="wwwroot\images\architecture-art-blur-159868.jpg" />
+    <Content Remove="wwwroot\images\lost-cat.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap\css\bootstrap.css.map" />
@@ -60,15 +67,6 @@
     <None Include="wwwroot\lib\bootstrap\js\bootstrap.min.js.map" />
     <None Include="..\..\SQL\RevenueHistory.sql">
       <Link>SQL\RevenueHistory.sql</Link>
-    </None>
-    <None Include="..\..\SQL\Template.sql">
-      <Link>SQL\Template.sql</Link>
-    </None>
-    <None Include="..\..\SQL\TemplateHistory.sql">
-      <Link>SQL\TemplateHistory.sql</Link>
-    </None>
-    <None Include="..\..\SQL\Users.sql">
-      <Link>SQL\Users.sql</Link>
     </None>
     <None Include="wwwroot\lib\chart.js\Chart.bundle.js" />
     <None Include="wwwroot\lib\chart.js\Chart.bundle.min.js" />
@@ -83,6 +81,7 @@
     <None Include="wwwroot\lib\jquery-easing\jquery.easing.compatibility.js" />
     <None Include="wwwroot\lib\jquery-easing\jquery.easing.js" />
     <None Include="wwwroot\lib\jquery-easing\jquery.easing.min.js" />
+    <None Include="wwwroot\js\sb-admin.min.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\lib\bootstrap\" />
@@ -94,6 +93,7 @@
     <Folder Include="wwwroot\lib\datatables\" />
     <Folder Include="wwwroot\lib\jquery-easing\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Pages\Error\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="wwwroot\_Layout.cshtml">
@@ -102,5 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Controllers\CloudFile.cs" />
+    <Compile Remove="Controllers\UploadedFileStream.cs" />
   </ItemGroup>
 </Project>

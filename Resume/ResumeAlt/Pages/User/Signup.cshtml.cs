@@ -4,12 +4,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
-using Resume.Models;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -19,12 +17,13 @@ namespace Resume.Pages
     {
         private readonly Models.AppContext _context;
 
-        // TODO expand this for many APIs?
         private readonly IOptions<Configuration.SendGrid> _sendGrid;
 
         public string Email { get; private set; }
 
         public string Error { get; private set; }
+
+        public string EmailTemplate => System.IO.File.ReadAllText("Pages/User/EmailTemplate.html");
 
         public SignupModel(IOptions<Configuration.SendGrid> sendGrid, Models.AppContext app) {
             _context = app;
@@ -51,18 +50,21 @@ namespace Resume.Pages
         [HttpPost]
         public async Task<IActionResult> OnPost(UserRequest user)
         {
+            this.Email = user.Email;
             if (!ValidateUserRequest(user, out string res)) {
                 this.Error = res;
+                return Page();
             }
 
-            User toAdd = new User()
+            Models.User toAdd = new Models.User()
             {
+                ID = Guid.NewGuid(),
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 AvailableCash = 0,
                 Email = user.Email,
                 PasswordHash = Hash(user.Password),
-                VerifyString = Guid.NewGuid().ToString(),
+                VerifyString = Guid.NewGuid(),
                 Verified = false
             };
 
@@ -102,7 +104,7 @@ namespace Resume.Pages
         /// </summary>
         /// <returns>The SendGrid response</returns>
         /// <param name="user">User to send email to</param>
-        private async Task<Response> SendEmail(User user) {
+        private async Task<Response> SendEmail(Models.User user) {
             // TODO make better email
             var apiKey = this._sendGrid.Value.Key;
             var client = new SendGridClient(apiKey);
@@ -110,13 +112,13 @@ namespace Resume.Pages
             var subject = "Welcome to ResuME! Confirm your email here.";
             var to = new EmailAddress(user.Email, user.FirstName + " " + user.LastName);
             var link = string.Format(
-                "{0}://{1}/user/verify?email={2}&guid={3}", 
+                "{0}://{1}/verify?email={2}&guid={3}", 
                 this.Request.Scheme, 
                 this.Request.Host, 
                 user.Email, 
                 user.VerifyString);
             var plainTextContent = "Please follow this link to verify your account: " + link;
-            var htmlContent = string.Format("<strong>Please follow this link to verify your account: <a href=\"{0}\">ResuME</a></strong>", link);
+            var htmlContent = this.EmailTemplate.Replace("<--resuME-Link-->", link);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             return await client.SendEmailAsync(msg);
         }

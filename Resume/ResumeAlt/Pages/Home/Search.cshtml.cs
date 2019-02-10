@@ -49,15 +49,20 @@ namespace Resume.Pages.Home
             }
             else 
             {
-                string[] keys = query.Split(" ");
-                // searches whether anyword
-                // TODO make search better
-                this.Templates = context.Set<Template>()
-                                        .Where(t => 
-                                               keys.Select(key => t.Keywords.Contains(key)).Any()
-                                                || keys.Select(key => t.Description.Contains(key)).Any()
-                                                || keys.Select(key => t.Title.Contains(key)).Any()
-                                              ).ToList();
+                string[] keys = (string.IsNullOrEmpty(query) ? new string[0] : query.Split(" "));
+
+                List<KeyValuePair<int, Template>> rank = new List<KeyValuePair<int, Template>>();
+                foreach(Template t in context.Set<Template>())
+                {
+                    rank.Add(new KeyValuePair<int, Template>(keys.Sum(
+                            key => (t.Keywords.ToLower().Contains(key.ToLower()) ? 1 : 0)
+                                    + (t.Description.ToLower().Contains(key.ToLower()) ? 1 : 0)
+                                    + (t.Title.ToLower().Contains(key.ToLower()) ? 1 : 0)), t));
+                }
+
+                rank.Sort((x, y) => y.Key.CompareTo(x.Key));
+                this.Templates = rank.Where(l => l.Key > 0).Select(l => l.Value).ToList();
+
                 return Page();
             }
         }

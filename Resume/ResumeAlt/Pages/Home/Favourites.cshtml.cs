@@ -12,7 +12,7 @@ namespace Resume.Pages.Home
     {
         private readonly Models.AppContext _context;
 
-        public User CurrentUser { get; set; }
+        public Models.User CurrentUser { get; set; }
 
         /// <summary>
         /// List of (Links,LinkText)
@@ -30,6 +30,7 @@ namespace Resume.Pages.Home
             Breadcrumb.AddLast(Tuple.Create<string, string>("Home", "/home"));
             Breadcrumb.AddLast(Tuple.Create<string, string>("Favourites", null));
 
+            // TODO can this email be spoofed?
             string userEmail = this.HttpContext.User.Identity.Name;
             if (string.IsNullOrEmpty(userEmail))
             {
@@ -37,13 +38,13 @@ namespace Resume.Pages.Home
             }
             else
             {
-                // TODO does cookie have data integrity?
                 this.CurrentUser = _context.Set<User>().Where(entry => entry.Email.Equals(userEmail)).FirstOrDefault();
+                _context.Entry(this.CurrentUser).Collection(u => u.Favorites).Load();
                 return Page();
             }
         }
 
-        public ActionResult OnPostDelete(string template) 
+        public async Task<ActionResult> OnPostDelete(string template) 
         {
             string userEmail = this.HttpContext.User.Identity.Name;
             if (string.IsNullOrEmpty(userEmail))
@@ -52,13 +53,21 @@ namespace Resume.Pages.Home
             }
             else
             {
-                this.CurrentUser = _context.Set<User>().Where(entry => entry.Email.Equals(userEmail)).FirstOrDefault();
-                this.CurrentUser.Favorites = this.CurrentUser.Favorites.Where(fav => fav.TemplateId.Equals(Int32.Parse(template))).ToList();
+                this.CurrentUser = _context.Set<Models.User>().Where(entry => entry.Email.Equals(userEmail)).FirstOrDefault();
+                _context.Entry(this.CurrentUser).Collection(u => u.Favorites).Load();
+
+                Favourite t = this.CurrentUser.Favorites.FirstOrDefault(fav => fav.TemplateId.Equals(new Guid(template)));
+
+                if (t != null)
+                {
+                    _context.Remove(t);
+                    await _context.SaveChangesAsync();
+                }
                 return Page();
             }
         }
 
-        public string GetTitleFromId(int templateId) {
+        public string GetTitleFromId(Guid templateId) {
             return _context.Set<Template>().Where(entry => entry.ID.Equals(templateId)).First().Title;
         }
     }

@@ -15,6 +15,8 @@ namespace Resume.Pages.Home
 
         public User CurrentUser { get; set; }
 
+        public string Error { get; set; }
+
         /// <summary>
         /// List of (Links,LinkText)
         /// </summary>
@@ -50,9 +52,40 @@ namespace Resume.Pages.Home
 
         public async Task<ActionResult> OnPostProject(string name, string supervisor, string company, DateTime start, DateTime end, string detail) 
         {
-            // TODO vlaidate and error handle
+            this.Error = null;
+            if(string.IsNullOrEmpty(name))
+            {
+                this.Error = "Project Name can't be empty.";
+            }
+
+            if (string.IsNullOrEmpty(supervisor))
+            {
+                this.Error = "Project Supervisor can't be empty.";
+            }
+
+            if (string.IsNullOrEmpty(company))
+            {
+                this.Error = "Project Company can't be empty.";
+            }
+
+            if (start == null || start.CompareTo(DateTime.UtcNow) > 0)
+            {
+                this.Error = "Start Date is invalid.";
+            }
+
+            if (string.IsNullOrEmpty(detail))
+            {
+                this.Error = "Project Detail can't be empty.";
+            }
+
+            if (!string.IsNullOrEmpty(this.Error))
+            {
+                return Page();
+            }
+
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
             this.CurrentUser.ProjectDetails.Add(new ProjectDetail() {
+                ID = Guid.NewGuid(),
                 Company = company,
                 Supervisor = supervisor,
                 Title = name,
@@ -66,9 +99,31 @@ namespace Resume.Pages.Home
 
         public async Task<ActionResult> OnPostCert(string name, string issuer, DateTime start)
         {
+            this.Error = null;
+            if (string.IsNullOrEmpty(name))
+            {
+                this.Error = "Certificate Name can't be empty.";
+            }
+
+            if (string.IsNullOrEmpty(issuer))
+            {
+                this.Error = "Certificate Issuer can't be empty.";
+            }
+
+            if (start == null || start.CompareTo(DateTime.UtcNow) > 0)
+            {
+                this.Error = "Start Date is invalid.";
+            }
+
+            if (!string.IsNullOrEmpty(this.Error))
+            {
+                return Page();
+            }
+
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
             this.CurrentUser.CertDetails.Add(new CertDetail()
             {
+                ID = Guid.NewGuid(),
                 Name = name,
                 Issuer = issuer,
                 DateAchieved = start,
@@ -79,6 +134,37 @@ namespace Resume.Pages.Home
 
         public async Task<ActionResult> OnPostWork(string title, string location, string company, DateTime start, DateTime end, string detail)
         {
+            this.Error = null;
+            if (string.IsNullOrEmpty(title))
+            {
+                this.Error = "Work Title can't be empty.";
+            }
+
+            if (string.IsNullOrEmpty(location))
+            {
+                this.Error = "Work Location can't be empty.";
+            }
+
+            if (string.IsNullOrEmpty(company))
+            {
+                this.Error = "Project Company can't be empty.";
+            }
+
+            if (start == null || start.CompareTo(DateTime.UtcNow) > 0)
+            {
+                this.Error = "Start Date is invalid.";
+            }
+
+            if (string.IsNullOrEmpty(detail))
+            {
+                this.Error = "Work Detail can't be empty.";
+            }
+
+            if (!string.IsNullOrEmpty(this.Error))
+            {
+                return Page();
+            }
+
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
             this.CurrentUser.WorkDetails.Add(new WorkDetail()
             {
@@ -96,6 +182,27 @@ namespace Resume.Pages.Home
         [HttpPost]
         public async Task<ActionResult> OnPostSkill(string name, string level, string skillClass)
         {
+            this.Error = null;
+            if (string.IsNullOrEmpty(name))
+            {
+                this.Error = "Skill Name can't be empty.";
+            }
+
+            if (string.IsNullOrEmpty(level))
+            {
+                this.Error = "Skill Level can't be empty.";
+            }
+
+            if (string.IsNullOrEmpty(skillClass))
+            {
+                this.Error = "Skill Class can't be empty.";
+            }
+
+            if (!string.IsNullOrEmpty(this.Error))
+            {
+                return Page();
+            }
+
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
             this.CurrentUser.SkillDetails.Add(new SkillDetail()
             {
@@ -109,8 +216,29 @@ namespace Resume.Pages.Home
 
         [HttpPost]
         [ActionName("Education")]
-        public async Task<ActionResult> OnPostEducation(string name, string degree, DateTime end, DateTime start, string achv)
+        public async Task<ActionResult> OnPostEducation(string name, string degree, DateTime start, DateTime end, string achv)
         {
+            this.Error = null;
+            if (string.IsNullOrEmpty(name))
+            {
+                this.Error = "Education Name can't be empty.";
+            }
+
+            if (string.IsNullOrEmpty(degree))
+            {
+                this.Error = "Education Degree can't be empty.";
+            }
+
+            if (start == null || start.CompareTo(DateTime.UtcNow) > 0)
+            {
+                this.Error = "Start Date is invalid.";
+            }
+
+            if (!string.IsNullOrEmpty(this.Error))
+            {
+                return Page();
+            }
+
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
             this.CurrentUser.EducationDetails.Add(new EducationDetail()
             {

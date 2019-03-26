@@ -57,6 +57,11 @@
     <Content Remove="wwwroot\js\sb-admin.min.js" />
     <Content Remove="wwwroot\images\architecture-art-blur-159868.jpg" />
     <Content Remove="wwwroot\images\lost-cat.jpg" />
+    <Content Remove="wwwroot\images\black-and-white-close-up-cubes-1591062.jpg" />
+    <Content Remove="wwwroot\images\email.jpg" />
+    <Content Remove="wwwroot\images\black-and-white-close-up-cubes-1591062.jpg" />
+    <Content Remove="wwwroot\images\delivery-envelopes-letters-1919343.jpg" />
+    <Content Remove="wwwroot\images\mail.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap\css\bootstrap.css.map" />

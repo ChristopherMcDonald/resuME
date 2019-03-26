@@ -27,7 +27,7 @@ namespace Resume.Pages.Home
         public SearchModel(IOptions<Configuration.CloudStorage> cloudSettings, Models.AppContext app)
         {
             context = app;
-            azureFileController = new AzureFileController(cloudSettings.Value.ConnectionString);
+            azureFileController = new AzureFileController(cloudSettings.Value.ConnectionString, cloudSettings.Value.ReadString);
         }
 
         public ActionResult OnGet(string query)

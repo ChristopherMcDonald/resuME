@@ -50,7 +50,7 @@ namespace Resume.Pages.Home
             }
         }
 
-        public async Task<ActionResult> OnPostProject(string name, string supervisor, string company, DateTime start, DateTime end, string detail) 
+        public async Task<ActionResult> OnPostProject(string name, string supervisor, string company, DateTime start, DateTime end, string summary) 
         {
             this.Error = null;
             if(string.IsNullOrEmpty(name))
@@ -68,31 +68,43 @@ namespace Resume.Pages.Home
                 this.Error = "Project Company can't be empty.";
             }
 
-            if (start == null || start.CompareTo(DateTime.UtcNow) > 0)
+            if (start.Equals(DateTime.MinValue))
             {
                 this.Error = "Start Date is invalid.";
             }
 
-            if (string.IsNullOrEmpty(detail))
+            if (!DateTime.MinValue.Equals(end) && end.CompareTo(start) < 0)
+            {
+                this.Error = "End Date cannot be after Start Date.";
+            }
+
+            if (string.IsNullOrEmpty(summary))
             {
                 this.Error = "Project Detail can't be empty.";
             }
 
             if (!string.IsNullOrEmpty(this.Error))
             {
-                return Page();
+                return OnGet();
             }
 
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
-            this.CurrentUser.ProjectDetails.Add(new ProjectDetail() {
+            ProjectDetail projectDetail = new ProjectDetail()
+            {
                 ID = Guid.NewGuid(),
                 Company = company,
                 Supervisor = supervisor,
                 Title = name,
                 StartDate = start,
-                EndDate = end,
-                Detail = detail
-            });
+                Summary = summary
+            };
+
+            if (!DateTime.MinValue.Equals(end))
+            {
+                projectDetail.EndDate = end;
+            }
+
+            this.CurrentUser.ProjectDetails.Add(projectDetail);
             await _context.SaveChangesAsync();
             return Redirect("~/details");
         }
@@ -117,7 +129,7 @@ namespace Resume.Pages.Home
 
             if (!string.IsNullOrEmpty(this.Error))
             {
-                return Page();
+                return OnGet();
             }
 
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
@@ -132,7 +144,7 @@ namespace Resume.Pages.Home
             return Redirect("~/details");
         }
 
-        public async Task<ActionResult> OnPostWork(string title, string location, string company, DateTime start, DateTime end, string detail)
+        public async Task<ActionResult> OnPostWork(string title, string location, string company, DateTime start, DateTime end, string summary)
         {
             this.Error = null;
             if (string.IsNullOrEmpty(title))
@@ -150,31 +162,42 @@ namespace Resume.Pages.Home
                 this.Error = "Project Company can't be empty.";
             }
 
-            if (start == null || start.CompareTo(DateTime.UtcNow) > 0)
+            if (start.Equals(DateTime.MinValue))
             {
                 this.Error = "Start Date is invalid.";
             }
 
-            if (string.IsNullOrEmpty(detail))
+            if (!DateTime.MinValue.Equals(end) && end.CompareTo(start) < 0)
             {
-                this.Error = "Work Detail can't be empty.";
+                this.Error = "End Date cannot be after Start Date.";
+            }
+
+            if (string.IsNullOrEmpty(summary))
+            {
+                this.Error = "Work summary can't be empty.";
             }
 
             if (!string.IsNullOrEmpty(this.Error))
             {
-                return Page();
+                return OnGet();
             }
 
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
-            this.CurrentUser.WorkDetails.Add(new WorkDetail()
+            WorkDetail workDetail = new WorkDetail()
             {
                 Company = company,
                 Location = location,
                 Title = title,
                 StartDate = start,
-                EndDate = end,
-                Detail = detail
-            });
+                Summary = summary
+            };
+
+            if (!DateTime.MinValue.Equals(end))
+            {
+                workDetail.EndDate = end;
+            }
+
+            this.CurrentUser.WorkDetails.Add(workDetail);
             await _context.SaveChangesAsync();
             return Redirect("~/details");
         }
@@ -200,7 +223,7 @@ namespace Resume.Pages.Home
 
             if (!string.IsNullOrEmpty(this.Error))
             {
-                return Page();
+                return OnGet();
             }
 
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
@@ -216,10 +239,10 @@ namespace Resume.Pages.Home
 
         [HttpPost]
         [ActionName("Education")]
-        public async Task<ActionResult> OnPostEducation(string name, string degree, DateTime start, DateTime end, string achv)
+        public async Task<ActionResult> OnPostEducation(string schoolname, string degree, DateTime start, DateTime end, string achv, string gpa)
         {
             this.Error = null;
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(schoolname))
             {
                 this.Error = "Education Name can't be empty.";
             }
@@ -229,25 +252,42 @@ namespace Resume.Pages.Home
                 this.Error = "Education Degree can't be empty.";
             }
 
-            if (start == null || start.CompareTo(DateTime.UtcNow) > 0)
+            if (start.Equals(DateTime.MinValue))
             {
                 this.Error = "Start Date is invalid.";
             }
 
+            if (!DateTime.MinValue.Equals(end) && end.CompareTo(start) < 0)
+            {
+                this.Error = "End Date cannot be after Start Date.";
+            }
+
+            if (!float.TryParse(gpa, out float realGpa) || realGpa < 0)
+            {
+                this.Error = "GPA is invalid (only positive numbers are accepted)";
+            }
+
             if (!string.IsNullOrEmpty(this.Error))
             {
-                return Page();
+                return OnGet();
             }
 
             this.CurrentUser = this.GetUser(HttpContext.User.Identity.Name);
-            this.CurrentUser.EducationDetails.Add(new EducationDetail()
+            EducationDetail educationDetail = new EducationDetail()
             {
-                Name = name,
+                SchoolName = schoolname,
                 Degree = degree,
-                Achievements = achv,
+                Achievement = achv,
                 StartDate = start,
-                EndDate = end,
-            });
+                GPA = realGpa
+            };
+
+            if (!DateTime.MinValue.Equals(end))
+            {
+                educationDetail.EndDate = end;
+            }
+
+            this.CurrentUser.EducationDetails.Add(educationDetail);
             await _context.SaveChangesAsync();
             return Redirect("~/details");
         }

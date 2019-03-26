@@ -14,16 +14,18 @@ namespace Resume.Controllers
         /// <summary>
         /// The global storage key. Used for read access 
         /// </summary>
-        private readonly string GlobalStorageKey = "?sv=2017-11-09&ss=f&srt=sco&sp=r&se=9999-11-04T04:37:37Z&st=2018-11-03T19:37:37Z&spr=https&sig=4SXBqGuFDzsDTmu1uVVLXllghIhYUNxA0QeuV7Eg9xc%3D";
+        private string GlobalStorageKey;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Resume.Controllers.AzureFileController"/> class.
         /// Used for interfacing with Azure File Storage
         /// </summary>
         /// <param name="connection">Connection string, provided by Azure</param>
-        public AzureFileController(string connection)
+        public AzureFileController(string connection, string read)
         {
             cloud = CloudStorageAccount.Parse(connection);
+            GlobalStorageKey = read;
         }
 
         /// <summary>
@@ -94,7 +96,7 @@ namespace Resume.Controllers
             StorageUri uri = cloud.CreateCloudFileClient()
                                   .GetShareReference(FileType.Images.ToString().ToLower())
                                   .GetRootDirectoryReference()
-                                  .GetFileReference(guid)
+                                  .GetFileReference(Path.GetFileNameWithoutExtension(guid))
                                   .StorageUri;
             string primary = uri.PrimaryUri.ToString() + GlobalStorageKey;
             WebRequest request = WebRequest.Create(primary);

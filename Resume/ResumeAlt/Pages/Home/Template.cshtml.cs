@@ -25,13 +25,13 @@ namespace Resume.Pages.Home
 
         public Template Template { get; set; }
 
-        public User CurrentUser { get; private set; }
+        public Models.User CurrentUser { get; private set; }
 
         public string GetPreviewImageLink() => azureFileController.GetShareableImageLink(this.Template.PreviewImageLink);
 
         public TemplateModel(IOptions<Configuration.CloudStorage> cloudSettings, Models.AppContext app) {
             this.context = app;
-            azureFileController = new AzureFileController(cloudSettings.Value.ConnectionString);
+            azureFileController = new AzureFileController(cloudSettings.Value.ConnectionString, cloudSettings.Value.ReadString);
 
             this.Breadcrumb = new LinkedList<Tuple<string, string>>();
             Breadcrumb.AddLast(Tuple.Create<string, string>("Home", "/home"));

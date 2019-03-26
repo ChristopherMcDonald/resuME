@@ -1,17 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Resume.Models
 {
-    public class EducationDetail
+    public class EducationDetail : Detail
     {
-        [Key]
-        public Guid ID { get; set; }
-        public Guid UserId { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string Name { get; set; }
+        public DateTime? EndDate { get; set; }
+        public bool EndDateTentative { get; set; }
+        public string SchoolName { get; set; }
         public string Degree { get; set; }
-        public string Achievements { get; set; }
+        public string Achievement { get; set; }
+        public float GPA { get; set; }
     }
 }

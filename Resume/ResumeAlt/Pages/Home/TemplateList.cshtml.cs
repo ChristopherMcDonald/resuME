@@ -24,7 +24,8 @@ namespace Resume.Pages.Home
         private readonly List<string> acceptableImageExtensions = new List<string>()
         {
             ".png",
-            ".jpg"
+            ".jpg",
+            ".jpeg"
         };
 
         private readonly List<string> acceptableTemplateExtensions = new List<string>()
@@ -43,7 +44,7 @@ namespace Resume.Pages.Home
 
         public TemplateListModel(IOptions<Configuration.CloudStorage> cloudSettings, Models.AppContext app) {
             _context = app;
-            azureFileController = new AzureFileController(cloudSettings.Value.ConnectionString);
+            azureFileController = new AzureFileController(cloudSettings.Value.ConnectionString, cloudSettings.Value.ReadString);
         }
 
         public ActionResult OnGet()

@@ -10,6 +10,8 @@ namespace Resume.Models
     {
         public User()
         {
+            this.UserInfo = new HashSet<UserInfo>();
+
             this.Templates = new HashSet<Template>();
             this.Transactions = new HashSet<CashHistory>();
             this.Favorites = new HashSet<Favourite>();
@@ -33,6 +35,8 @@ namespace Resume.Models
         public Guid VerifyString { get; set; }
         public bool Verified { get; set; }
 
+        public ICollection<UserInfo> UserInfo { get; set; }
+
         public ICollection<Template> Templates { get; set; }
         public ICollection<CashHistory> Transactions { get; set; }
         public ICollection<Favourite> Favorites { get; set; }
@@ -44,8 +48,5 @@ namespace Resume.Models
         public ICollection<CertDetail> CertDetails { get; set; }
         public ICollection<EducationDetail> EducationDetails { get; set; }
         public ICollection<SkillDetail> SkillDetails { get; set; }
-
-        [NotMapped]
-        public ICollection<object> Details => new List<object>() { WorkDetails, ProjectDetails, CertDetails, EducationDetails, SkillDetails };
     }
 }

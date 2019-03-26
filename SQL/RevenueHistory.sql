@@ -1,5 +1,7 @@
 DROP table dbo.[SkillDetail];
 DROP table dbo.[CertDetail];
+DROP table dbo.[WorkDetailExtended];
+DROP table dbo.[EducationDetailExtended];
 DROP table dbo.[EducationDetail];
 DROP table dbo.[WorkDetail];
 DROP table dbo.[ProjectDetail];
@@ -8,7 +10,9 @@ DROP table dbo.[RevenueHistory];
 DROP table dbo.[TemplateHistory];
 DROP table dbo.[Template];
 DROP table dbo.[Favourite];
+DROP table dbo.[UserInfo];
 DROP table dbo.[User];
+
 
 CREATE TABLE dbo.[User]
 (
@@ -21,6 +25,18 @@ CREATE TABLE dbo.[User]
     VerifyString uniqueidentifier NOT NULL,
     Verified bit NOT NULL,
     CONSTRAINT [PK_User_UserID] PRIMARY KEY CLUSTERED (ID ASC)
+)
+
+CREATE TABLE dbo.[UserInfo] (
+    ID uniqueidentifier NOT NULL,
+    UserId uniqueidentifier NOT NULL,
+    PhoneNumber NVARCHAR(100),
+    AltEmail NVARCHAR(100),
+    Website NVARCHAR(100),
+    Summary NVARCHAR(MAX),
+    NameExt NVARCHAR(100),
+    CONSTRAINT [PK_UserInfo_UserID] PRIMARY KEY CLUSTERED (ID ASC),
+    CONSTRAINT FK_UserInfo_UserId FOREIGN KEY (UserId) REFERENCES dbo.[User](ID)
 )
 
 CREATE TABLE Template
@@ -61,26 +77,36 @@ CREATE TABLE dbo.[WorkDetail]
     ID uniqueidentifier NOT NULL,
     UserId uniqueidentifier NOT NULL,
     StartDate datetime NOT NULL,
-    EndDate datetime NOT NULL,
+    EndDate datetime,
+    EndDateTentative bit NOT NULL,
     Title NVARCHAR(100) NOT NULL,
     Location NVARCHAR(100) NOT NULL,
     Company NVARCHAR(100) NOT NULL,
-    Detail NVARCHAR(MAX) NOT NULL,
+    Summary NVARCHAR(MAX) NOT NULL,
     CONSTRAINT [PK_WorkDetail_ID] PRIMARY KEY CLUSTERED (ID ASC),
     CONSTRAINT FK_WorkDetail_UserID FOREIGN KEY (UserId) REFERENCES dbo.[User] (ID) ON DELETE CASCADE ON UPDATE CASCADE  
 );
 
+CREATE TABLE dbo.[WorkDetailExtended]
+(
+    ID uniqueidentifier NOT NULL,
+    DetailId uniqueidentifier NOT NULL,
+    Item NVARCHAR NOT NULL,
+    CONSTRAINT [PK_WorkDetailExt_ID] PRIMARY KEY CLUSTERED (ID ASC),
+    CONSTRAINT FK_WorkDetailExt_DetailID FOREIGN KEY (ID) REFERENCES dbo.[WorkDetail] (ID) ON DELETE CASCADE ON UPDATE CASCADE  
+);
 
 CREATE TABLE dbo.[ProjectDetail]
 (
     ID uniqueidentifier NOT NULL,
     UserId uniqueidentifier NOT NULL,
     StartDate datetime NOT NULL,
-    EndDate datetime NOT NULL,
+    EndDate datetime,
+    EndDateTentative bit NOT NULL,
     Title NVARCHAR(100) NOT NULL,
     Supervisor NVARCHAR(100) NOT NULL,
     Company NVARCHAR(100) NOT NULL,
-    Detail NVARCHAR(MAX) NOT NULL,
+    Summary NVARCHAR(MAX) NOT NULL,
     CONSTRAINT [PK_ProjectDetail_ID] PRIMARY KEY CLUSTERED (ID ASC),
     CONSTRAINT FK_ProjectDetail_UserID FOREIGN KEY (UserId) REFERENCES dbo.[User] (ID) ON DELETE CASCADE ON UPDATE CASCADE  
 );
@@ -90,19 +116,30 @@ CREATE TABLE dbo.[EducationDetail]
     ID uniqueidentifier NOT NULL,
     UserId uniqueidentifier NOT NULL,
     StartDate datetime NOT NULL,
-    EndDate datetime NOT NULL,
-    Name NVARCHAR(100) NOT NULL,
+    EndDate datetime,
+    EndDateTentative bit NOT NULL,
+    SchoolName NVARCHAR(100) NOT NULL,
     Degree NVARCHAR(100) NOT NULL,
-    Achievements NVARCHAR(MAX) NOT NULL,
+    Achievement NVARCHAR(MAX) NOT NULL, -- Honours, Thesis, whatever... etc.
+    GPA REAL,
     CONSTRAINT [PK_EducationSkill_ID] PRIMARY KEY CLUSTERED (ID ASC),
     CONSTRAINT FK_EducationSkill_UserID FOREIGN KEY (UserId) REFERENCES dbo.[User] (ID) ON DELETE CASCADE ON UPDATE CASCADE  
+);
+
+CREATE TABLE dbo.[EducationDetailExtended]
+(
+    ID uniqueidentifier NOT NULL,
+    EducationId uniqueidentifier NOT NULL,
+    Item NVARCHAR NOT NULL,
+    CONSTRAINT [PK_EducationDetailExt_ID] PRIMARY KEY CLUSTERED (ID ASC),
+    CONSTRAINT FK_EducationDetailExt_DetailID FOREIGN KEY (ID) REFERENCES dbo.[EducationDetail] (ID) ON DELETE CASCADE ON UPDATE CASCADE  
 );
 
 CREATE TABLE dbo.[CertDetail]
 (
     ID uniqueidentifier NOT NULL,
     UserId uniqueidentifier NOT NULL,
-    DateAchieved datetime NOT NULL,
+    DateAchieved datetime,
     Name NVARCHAR(100) NOT NULL,
     Issuer NVARCHAR(100) NOT NULL,
     CONSTRAINT [PK_CertDetail_ID] PRIMARY KEY CLUSTERED (ID ASC),

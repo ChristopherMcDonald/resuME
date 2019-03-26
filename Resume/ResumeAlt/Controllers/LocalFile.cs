@@ -10,8 +10,6 @@ namespace Resume.Controllers
     /// </summary>
     public class LocalFile
     {
-        public static string TempPath => Path.GetTempPath();
-
         public string LocalPath;
 
         public Stream Stream;
@@ -23,7 +21,7 @@ namespace Resume.Controllers
         /// <param name="file">File.</param>
         public static LocalFile Create(IFormFile file) {
             // get unique file name
-            string newPath = TempPath + Guid.NewGuid() + Path.GetExtension(file.FileName);
+            string newPath = Guid.NewGuid() + Path.GetExtension(file.FileName);
             LocalFile localFile = new LocalFile() { LocalPath = newPath, Stream = file.OpenReadStream() };
             return localFile;
         }

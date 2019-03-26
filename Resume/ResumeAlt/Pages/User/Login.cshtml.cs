@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
-using Resume.Models;
+using Resume;
 
 namespace Resume.Pages
 {
@@ -40,11 +40,12 @@ namespace Resume.Pages
         public async Task<ActionResult> OnPost(LoginRequest request) 
         {
             try {
-                User user = _context.Set<User>().Where(entry => entry.Email.Equals(request.Email)).First();
+                this.Email = request.Email;
+                Models.User user = _context.Set<Models.User>().Where(entry => entry.Email.Equals(request.Email)).FirstOrDefault();
 
-                if (!user.Verified)
+                if (user == null || request.Password == null || request.Password.Length < 6)
                 {
-                    this.Error = "Check your email! We sent you one to verify your email.";
+                    this.Error = "Wrong email and password combination, try again.";
                     return Page();
                 }
 
@@ -64,14 +65,21 @@ namespace Resume.Pages
                 {
                     if (hashBytes[i + 16] != hash[i])
                     {
-                        this.Error = "Wrong email and password combination, try again";
+                        this.Error = "Wrong email and password combination, try again.";
                         return Page();
                     }
                 }
 
+                // check if verified AFTER password to make sure hacker doesn't churn through emails to find users
+                if (!user.Verified)
+                {
+                    this.Error = "Check your email! We sent you one to verify your email.";
+                    return Page();
+                }
+
                 var claims = new List<Claim>
                 {
-                    // name is accessible via this.HttpContext.User.Identity.Name
+                    // name is accessible via this.HttpContext.User.Identity.Name, so we store Email in it
                     new Claim(ClaimTypes.Name, user.Email),
                     new Claim("FullName", user.FirstName)
                 };
@@ -96,7 +104,7 @@ namespace Resume.Pages
             }
             catch (Exception e) 
             {
-                Console.WriteLine("Exception thrown during login: " + e.Message);
+                System.Diagnostics.Trace.TraceError(string.Format("Exception thrown during Login. Exception: {0}, Parameters: {1}", e.ToString(), request.Email));
                 this.Error = "Something went wrong...";
                 return Page();
             }

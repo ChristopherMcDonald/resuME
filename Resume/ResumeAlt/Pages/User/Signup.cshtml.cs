@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
+using Resume.Controllers;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using DataTypes = Resume.Controllers.DataType;
 
 namespace Resume.Pages
 {
@@ -21,18 +23,23 @@ namespace Resume.Pages
 
         public string Email { get; private set; }
 
+        public string FirstName { get; private set; }
+
+        public string LastName { get; private set; }
+
         public string Error { get; private set; }
 
         public string EmailTemplate => System.IO.File.ReadAllText("Pages/User/EmailTemplate.html");
 
-        public SignupModel(IOptions<Configuration.SendGrid> sendGrid, Models.AppContext app) {
+        public SignupModel(IOptions<Configuration.SendGrid> sendGrid, Models.AppContext app)
+        {
             _context = app;
             _sendGrid = sendGrid;
         }
 
         public ActionResult OnGet()
         {
-            this.Email = Request.Query.ContainsKey("email") ? Request.Query["email"].First() : string.Empty;
+            this.Email = Request.Query.ContainsKey("email") ? Request.Query["email"].First() : this.Email ?? string.Empty;
 
             if (!string.IsNullOrEmpty(HttpContext.User.Identity.Name))
             {
@@ -51,9 +58,10 @@ namespace Resume.Pages
         public async Task<IActionResult> OnPost(UserRequest user)
         {
             this.Email = user.Email;
-            if (!ValidateUserRequest(user, out string res)) {
+            if (!ValidateUserRequest(user, out string res))
+            {
                 this.Error = res;
-                return Page();
+                return OnGet();
             }
 
             Models.User toAdd = new Models.User()
@@ -77,26 +85,42 @@ namespace Resume.Pages
 
         private bool ValidateUserRequest(UserRequest user, out string res)
         {
-            res = "";
-            var validator = new EmailAddressAttribute();
+            res = string.Empty;
+            bool isValid = true;
 
-            if (string.IsNullOrEmpty(user.FirstName)) {
-                res = "First Name cannot be empty.";
-            } 
-            else if (string.IsNullOrEmpty(user.LastName))
+            if (DataValidator.Validate(DataTypes.Email, user.Email, out res))
             {
-                res = "Last Name cannot be empty.";
+                this.Email = user.Email;
             }
-            else if (!validator.IsValid(user.Email))
+            else
             {
-                res = "Email is not in correct form.";
-            }
-            else if (!new Regex(@"[0-9]+").IsMatch(user.Password) || !new Regex(@"[A-Z]+").IsMatch(user.Password) || !new Regex(@".{6,}").IsMatch(user.Password)) 
-            {
-                res = "Password must have 6 characters, have an upper case letter and a number";
+                isValid = false;
             }
 
-            return string.Empty.Equals(res);
+            if (DataValidator.Validate(DataTypes.FirstName, user.FirstName, out res))
+            {
+                this.FirstName = user.FirstName;
+            }
+            else
+            {
+                isValid = false;
+            }
+
+            if (DataValidator.Validate(DataTypes.LastName, user.LastName, out res))
+            {
+                this.LastName = user.LastName;
+            }
+            else
+            {
+                isValid = false;
+            }
+
+            if(!DataValidator.Validate(DataTypes.Password, user.Password, out res))
+            {
+                isValid = false;
+            }
+
+            return isValid;
         }
 
         /// <summary>
@@ -104,18 +128,18 @@ namespace Resume.Pages
         /// </summary>
         /// <returns>The SendGrid response</returns>
         /// <param name="user">User to send email to</param>
-        private async Task<Response> SendEmail(Models.User user) {
-            // TODO make better email
+        private async Task<Response> SendEmail(Models.User user)
+        {
             var apiKey = this._sendGrid.Value.Key;
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("chris@christophermcdonald.me", "Christopher McDonald");
             var subject = "Welcome to ResuME! Confirm your email here.";
             var to = new EmailAddress(user.Email, user.FirstName + " " + user.LastName);
             var link = string.Format(
-                "{0}://{1}/verify?email={2}&guid={3}", 
-                this.Request.Scheme, 
-                this.Request.Host, 
-                user.Email, 
+                "{0}://{1}/verify?email={2}&guid={3}",
+                this.Request.Scheme,
+                this.Request.Host,
+                user.Email,
                 user.VerifyString);
             var plainTextContent = "Please follow this link to verify your account: " + link;
             var htmlContent = this.EmailTemplate.Replace("<--resuME-Link-->", link);
@@ -146,7 +170,7 @@ namespace Resume.Pages
         /// <summary>
         /// Request object to make new User
         /// </summary>
-        public class UserRequest 
+        public class UserRequest
         {
             public string FirstName { get; set; }
             public string LastName { get; set; }

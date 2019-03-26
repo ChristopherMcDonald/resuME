@@ -13,7 +13,11 @@
         @{ 
             if (Model.CurrentUser.Favorites.Select(fav => fav.TemplateId).Contains(Model.Template.ID))
             {
-                <i class="fas fa-heart fa-3x"></i>
+                <form asp-page-handler="favorite" method="post" id="fav">
+                    <input type="hidden" name="id" value="@Model.Template.ID" />
+                    <input type="hidden" name="query" value="@Request.Query["query"]" />
+                    <i class="fas fa-heart fa-3x" onclick="document.getElementById('fav').submit();"></i>
+                </form>
             }
             else
             {
@@ -34,36 +38,46 @@
         <form asp-page-handler="use" method="post" id="use">
             <h1>Skill Selection</h1>
             <h2>Certificate</h2>
-            <input type="hidden" name="id" value="@Model.Template.ID" />
+            <input type="hidden" name="templateId" value="@Model.Template.ID" />
 
             @foreach(Models.CertDetail cert in Model.CurrentUser.CertDetails)
             {
+                int i = 0;
                 <h5 style="display:inline-block;">@cert.Name</h5>
-                <input type="checkbox" id="@cert.ID" name="@cert.ID" />
+                <input type="checkbox" value="@cert.ID" name="@string.Concat("Cert", i.ToString())" />
+                i++;
             }
             <h2>Education</h2>
             @foreach(Models.EducationDetail edu in Model.CurrentUser.EducationDetails)
             {
-                <h5 style="display:inline-block;">@edu.Name</h5>
-                <input type="checkbox" id="@edu.ID" name="@edu.ID" />
+                int i = 0;
+                <h5 style="display:inline-block;">@edu.SchoolName</h5>
+                <input type="checkbox" value="@edu.ID" name="@string.Concat("Edu", i.ToString())" />
+                i++;
             }
             <h2>Work</h2>
             @foreach(Models.WorkDetail work in Model.CurrentUser.WorkDetails)
             {
+                int i = 0;
                 <h5 style="display:inline-block;">@work.Company - @work.Title</h5>
-                <input type="checkbox" id="@work.ID" name="@work.ID" />
+                <input type="checkbox" value="@work.ID" name="@string.Concat("Work", i.ToString())" />
+                i++;
             }
             <h2>Projects</h2>
             @foreach(Models.ProjectDetail proj in Model.CurrentUser.ProjectDetails) 
             {
+                int i = 0;
                 <h5  style="display:inline-block;">@proj.Title</h5>
-                <input type="checkbox" id="@proj.ID" name="@proj.ID" />
+                <input type="checkbox" value="@proj.ID" name="@string.Concat("Project", i.ToString())" />
+                i++;
             }
             <h2>Skills</h2>
             @foreach(Models.SkillDetail skill in Model.CurrentUser.SkillDetails)
             {
+                int i = 0;
                 <h5 style="display:inline-block;">@skill.Name</h5>
-                <input type="checkbox" id="@skill.ID" name="@skill.ID" />
+                <input type="checkbox" value="@skill.ID" name="@string.Concat("Skill", i.ToString())" />
+                i++;
             }
             <br>
             <input type="submit" class="btn btn-success">

@@ -4,320 +4,376 @@
     ViewData["Title"] = "Home";
     ViewData["Breadcrumb"] = Model.Breadcrumb;
 }
-<div class="container">
+
+@{
+    if (!string.IsNullOrEmpty(Model.Error))
+    {
+        <div class="alert alert-danger" role="alert">
+            Could not add detail! Error: @Model.Error
+        </div>
+    }
+}
+
+<div class="container" style="padding-bottom: 50px;">
     <div class="row">
         <div class="col-md-12 col-lg-4">
             <h2>Work Details</h2>
             <p>
-                @{ 
-                    foreach(Models.WorkDetail detail in Model.CurrentUser.WorkDetails)
+                @{
+                    foreach (Models.WorkDetail detail in Model.CurrentUser.WorkDetails)
                     {
                         <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
                             <h5>@detail.Title</h5>
                             <h6>@detail.Company</h6>
-                            <p style="color:#222;">
-                                <span>@detail.StartDate.ToShortDateString()</span>&nbsp;-&nbsp;<span>@detail.EndDate.ToShortDateString()</span>
-                            </p>
-                            <p>@detail.Detail</p>
-                        </div>
-                    }
+                    <p style="color:#222;">
+                        <span>@detail.StartDate.ToShortDateString()</span>&nbsp;-
+                        @{
+                            if (detail.EndDate.HasValue)
+                            {
+                                <span>@detail.EndDate?.ToShortDateString()</span>
+                            }
+                            else
+                            {
+                                <span>Current</span>
+                            }
+                        }
+                    </p>
+                    <p>@detail.Summary</p>
+                </div>
+            }
                 }
                 <!-- LIST OF WORK DETAILS -->
-            </p>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#workModal">
-                Add Detail
-            </button>
-            <br /><br />
-        </div>
-        <div class="col-md-12 col-lg-4">
-            <h2>Certificate Details</h2>
-            <p>
-                @{
-                    foreach (Models.CertDetail detail in Model.CurrentUser.CertDetails)
-                    {
-                        <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
-                            <h5>@detail.Name</h5>
-                            <h6>@detail.Issuer</h6>
-                            <p>
-                                <span>@detail.DateAchieved.ToShortDateString()</span>
-                            </p>
-                        </div>
-
-                    }
-                }
-                <!-- LIST OF Certificate DETAILS -->
                 </p>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#certModal">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#workModal">
                     Add Detail
                 </button>
                 <br /><br />
             </div>
-        <div class="col-md-12 col-lg-4">
-            <h2>Project Details</h2>
-            <p>
-                @{ 
-                    foreach(Models.ProjectDetail detail in Model.CurrentUser.ProjectDetails)
-                    {
-                        <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
-                            <h5>@detail.Title</h5>
-                            <h6>@detail.Supervisor</h6>
-                            <h6>@detail.Company</h6>
+            <div class="col-md-12 col-lg-4">
+                <h2>Certificate Details</h2>
+                <p>
+                    @{
+                        foreach (Models.CertDetail detail in Model.CurrentUser.CertDetails)
+                        {
+                            <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
+                                <h5>@detail.Name</h5>
+                                <h6>@detail.Issuer</h6>
+                        <p>
+                            <span>@detail.DateAchieved.ToShortDateString()</span>
+                        </p>
+                    </div>
+
+                }
+                    }
+                    <!-- LIST OF Certificate DETAILS -->
+                    </p>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#certModal">
+                        Add Detail
+                    </button>
+                    <br /><br />
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <h2>Project Details</h2>
+                    <p>
+                        @{
+                            foreach (Models.ProjectDetail detail in Model.CurrentUser.ProjectDetails)
+                            {
+                                <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
+                                    <h5>@detail.Title</h5>
+                                    <h6>@detail.Supervisor</h6>
+                                    <h6>@detail.Company</h6>
                             <p style="color:#222;">
-                                <span>@detail.StartDate.ToShortDateString()</span>&nbsp;-&nbsp;<span>@detail.EndDate.ToShortDateString()</span>
+                                <span>@detail.StartDate.ToShortDateString()</span>&nbsp;-
+                                @{
+                                    if (detail.EndDate.HasValue)
+                                    {
+                                        <span>@detail.EndDate?.ToShortDateString()</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Current</span>
+                                    }
+                                }
                             </p>
-                            <p>@detail.Detail</p>
+                            <p>@detail.Summary</p>
                         </div>
 
                     }
-                }
-                <!-- LIST OF Project DETAILS -->
-            </p>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#projectModal">
-                Add Detail
-            </button>
-            <br /><br />
-        </div>
-        <div class="col-md-12 col-lg-4">
-            <h2>Education Details</h2>
-            <p>
-                @{ 
-                    foreach(Models.EducationDetail detail in Model.CurrentUser.EducationDetails)
-                    {
-                        <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
-                            <h5>@detail.Name</h5>
-                            <h6>@detail.Degree</h6>
-                            <p style="color:#222;">
-                                <span>@detail.StartDate.ToShortDateString()</span>&nbsp;-&nbsp;<span>@detail.EndDate.ToShortDateString()</span>
-                            </p>
-                            <p>@detail.Achievements</p>
+                        }
+                        <!-- LIST OF Project DETAILS -->
+                        </p>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#projectModal">
+                            Add Detail
+                        </button>
+                        <br /><br />
                         </div>
-                    }
-                }
-                <!-- LIST OF Edu DETAILS -->
-            </p>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#eduModal">
-                Add Detail
-            </button>
-            <br /><br />
-        </div>
-        <div class="col-md-12 col-lg-4">
-            <h2>Skill Details</h2>
-            @{ 
-                    foreach(Models.SkillDetail detail in Model.CurrentUser.SkillDetails)
-                    {
-                        <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
-                            <h5>@detail.Name</h5>
-                            <h6>@detail.Level</h6>
-                            <h6>@detail.Class</h6>
-                        </div>
-                    }
-                }
-            <!-- LIST OF Skill DETAILS -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#skillModal">
-                Add Detail
-            </button>
-        </div>
-    </div>
-</div>
+                        <div class="col-md-12 col-lg-4">
+                            <h2>Education Details</h2>
+                            <p>
+                                @{
+                                    foreach (Models.EducationDetail detail in Model.CurrentUser.EducationDetails)
+                                    {
+                                        <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
+                                            <h5>@detail.SchoolName</h5>
+                                            <h6>@detail.Degree</h6>
+                                    <p style="color:#222;">
+                                        <span>@detail.StartDate.ToShortDateString()</span>&nbsp;-
+                                        @{
+                                            if (detail.EndDate.HasValue)
+                                            {
+                                                <span>@detail.EndDate?.ToShortDateString()</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Current</span>
+                                            }
+                                        }
+                                    </p>
+                                    <p>@detail.Achievement</p>
+                                    <p>GPA: @detail.GPA</p>
+                                </div>
+                            }
+                                }
+                                <!-- LIST OF Edu DETAILS -->
+                                </p>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#eduModal">
+                                    Add Detail
+                                </button>
+                                <br /><br />
+                                </div>
+                                <div class="col-md-12 col-lg-4">
+                                    <h2>Skill Details</h2>
+                                    @{
+                                        foreach (Models.SkillDetail detail in Model.CurrentUser.SkillDetails)
+                                        {
+                                            <div style="border-left: 2px solid grey; padding-left: 5px; margin: 5px 0px;">
+                                                <h5>@detail.Name</h5>
+                                                <h6>@detail.Level</h6>
+                                                <h6>@detail.Class</h6>
+                                            </div>
+                                        }
+                                    }
+                                    <!-- LIST OF Skill DETAILS -->
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#skillModal">
+                                        Add Detail
+                                    </button>
+                                </div>
+                                </div>
+                                </div>
 
-<!-- Work Modal -->
-<div class="modal fade" id="workModal" tabindex="-1" role="dialog" aria-labelledby="workModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Add a Work Detail</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          <form method="POST" asp-page-handler="Work">
-              <div class="form-group">
-                  <label for="title">Title</label>
-                  <input type="text" class="form-control" id="title" name="title" placeholder="What was your title?">
-              </div>
-              <div class="form-group">
-                  <label for="location">Location</label>
-                  <input type="text" class="form-control" id="location" name="location" placeholder="Where were you located?">
-              </div>
-              <div class="form-group">
-                  <label for="company">Company</label>
-                  <input type="text" class="form-control" id="company" name="company" placeholder="What was the company?">
-              </div>
-              <div class="form-group">
-                  <label for="start">Start Date</label>
-                  <input type="date" class="form-control" id="start" name="start" placeholder="YYYY-MM-DD">
-              </div>
-              <div class="form-group">
-                  <label for="end">End Date</label>
-                  <input type="date" class="form-control" id="end" name="end" placeholder="YYYY-MM-DD">
-              </div>
-              <div class="form-group">
-                  <label for="detail">Company</label>
-                  <textarea class="form-control" id="detail" name="detail" placeholder="What did you do?"></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Save</button>
-          </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+                                <!-- Work Modal -->
+                                <div class="modal fade" id="workModal" tabindex="-1" role="dialog" aria-labelledby="workModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Add a Work Detail</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" asp-page-handler="Work">
+                                                    <div class="form-group">
+                                                        <label for="title">Title</label>
+                                                        <input type="text" class="form-control" id="title" name="title" placeholder="What was your title?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="location">Location</label>
+                                                        <input type="text" class="form-control" id="location" name="location" placeholder="Where were you located?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="company">Company</label>
+                                                        <input type="text" class="form-control" id="company" name="company" placeholder="What was the company?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="start">Start Date</label>
+                                                        <input type="date" class="form-control" id="start" name="start" placeholder="YYYY-MM-DD">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="end">End Date</label>
+                                                        <input type="date" class="form-control" id="end" name="end" placeholder="YYYY-MM-DD (leave empty if current)">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="summary">Summary</label>
+                                                        <textarea class="form-control" id="summary" name="summary" placeholder="Summary of position, experience or accomplishments. This is usually placed before bullets, or replaced bullets."></textarea>
+                                                    </div>
+                                                    <!-- TODO add bullets -->
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-<!-- Education Modal -->
-<div class="modal fade" id="eduModal" tabindex="-1" role="dialog" aria-labelledby="eduModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Add an Education Detail</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          <form method="POST" asp-page-handler="Education">
-              <div class="form-group">
-                  <label for="name">School Name</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="What was the school named?">
-              </div>
-              <div class="form-group">
-                  <label for="degree">Degree</label>
-                  <input type="text" class="form-control" id="degree" name="degree" placeholder="What degree did you achieve?">
-              </div>
-              <div class="form-group">
-                  <label for="start">Start Date</label>
-                  <input type="date" class="form-control" id="start" name="start" placeholder="YYYY-MM-DD">
-              </div>
-              <div class="form-group">
-                  <label for="end">End Date</label>
-                  <input type="date" class="form-control" id="end" name="end" placeholder="YYYY-MM-DD">
-              </div>
-              <div class="form-group">
-                  <label for="achv">Achievements</label>
-                  <textarea class="form-control" id="achv" name="achv" placeholder="Anything notable?"></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Save</button>
-          </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+                                <!-- Education Modal -->
+                                <div class="modal fade" id="eduModal" tabindex="-1" role="dialog" aria-labelledby="eduModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Add an Education Detail</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" asp-page-handler="Education" id="edu-form">
+                                                    <div class="form-group">
+                                                        <label for="schoolname">School Name</label>
+                                                        <input type="text" class="form-control" id="schoolname" name="schoolname" placeholder="What was the school named?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="degree">Degree</label>
+                                                        <input type="text" class="form-control" id="degree" name="degree" placeholder="What degree did you achieve?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="start">Start Date</label>
+                                                        <input type="date" class="form-control" id="start" name="start" placeholder="YYYY-MM-DD">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="end">End Date</label>
+                                                        <input type="date" class="form-control" id="end" name="end" placeholder="YYYY-MM-DD">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="achv">Achievement</label>
+                                                        <textarea class="form-control" id="achv" name="achv" placeholder="This is usually used for summa cum laude or anything else you want to add."></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="gpa">GPA</label>
+                                                        <input type="text" class="form-control" id="gpa" name="gpa" placeholder="GPA" />
+                                                    </div>
 
-<!-- Cert Modal -->
-<div class="modal fade" id="certModal" tabindex="-1" role="dialog" aria-labelledby="certModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Add an Certificate Detail</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          <form method="POST" asp-page-handler="Cert">
-              <div class="form-group">
-                  <label for="name">Name</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="What is the name?">
-              </div>
-              <div class="form-group">
-                  <label for="issuer">Issuer</label>
-                  <input type="text" class="form-control" id="issuer" name="issuer" placeholder="Who awarded it to you?">
-              </div>
-              <div class="form-group">
-                  <label for="start">Date</label>
-                  <input type="date" class="form-control" id="start" name="start" placeholder="YYYY-MM-DD">
-              </div>
-              <button type="submit" class="btn btn-primary">Save</button>
-          </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+                                                    <h6>List of Details:</h6>
+                                                    <div class="entry input-group col-xs-3 form-group">
+                                                        <input class="form-control" name="fields[]" type="text" placeholder="Add a detail, keep it concise!" />
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-success btn-add" type="button">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-<!-- Skill Modal -->
-<div class="modal fade" id="skillModal" tabindex="-1" role="dialog" aria-labelledby="skillModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Add an Skill Detail</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          <form method="POST" asp-page-handler="Skill">
-              <div class="form-group">
-                  <label for="name">Skill Name</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="Name of the skill?">
-              </div>
-              <div class="form-group">
-                  <label for="level">Level</label>
-                  <input type="text" class="form-control" id="level" name="level" placeholder="What level do you think you can perform to?">
-              </div>
-              <div class="form-group">
-                  <label for="skillClass">Class</label>
-                  <input type="text" class="form-control" id="skillClass" name="skillClass" placeholder="How would you best classify this skill?">
-              </div>
-              <button type="submit" class="btn btn-primary">Save</button>
-          </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+                                <!-- Cert Modal -->
+                                <div class="modal fade" id="certModal" tabindex="-1" role="dialog" aria-labelledby="certModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Add an Certificate Detail</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" asp-page-handler="Cert">
+                                                    <div class="form-group">
+                                                        <label for="name">Name</label>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="What is the name?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="issuer">Issuer</label>
+                                                        <input type="text" class="form-control" id="issuer" name="issuer" placeholder="Who awarded it to you?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="start">Date</label>
+                                                        <input type="date" class="form-control" id="start" name="start" placeholder="YYYY-MM-DD">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-<!-- Project Modal -->
-<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLongTitle">Add a Project Detail</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          <form method="POST" asp-page-handler="Project">
-              <div class="form-group">
-                  <label for="name">Title</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="What was the project named?">
-              </div>
-              <div class="form-group">
-                  <label for="supervisor">Supervisor</label>
-                  <input type="text" class="form-control" id="supervisor" name="supervisor" placeholder="Did anyone supervise you?">
-              </div>
-              <div class="form-group">
-                  <label for="company">Company/School</label>
-                  <input type="text" class="form-control" id="company" name="company" placeholder="Who was it for?">
-              </div>
-              <div class="form-group">
-                  <label for="start">Start Date</label>
-                  <input type="date" class="form-control" id="start" name="start" placeholder="YYYY-MM-DD">
-              </div>
-              <div class="form-group">
-                  <label for="end">End Date</label>
-                  <input type="date" class="form-control" id="end" name="end" placeholder="YYYY-MM-DD">
-              </div>
-              <div class="form-group">
-                  <label for="detail">Details</label>
-                  <textarea class="form-control" id="detail" name="detail" placeholder="Anything notable?"></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Save</button>
-          </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+                                <!-- Skill Modal -->
+                                <div class="modal fade" id="skillModal" tabindex="-1" role="dialog" aria-labelledby="skillModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Add an Skill Detail</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" asp-page-handler="Skill">
+                                                    <div class="form-group">
+                                                        <label for="name">Skill Name</label>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="Name of the skill?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="level">Level</label>
+                                                        <input type="text" class="form-control" id="level" name="level" placeholder="What level do you think you can perform to?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="skillClass">Class</label>
+                                                        <input type="text" class="form-control" id="skillClass" name="skillClass" placeholder="How would you best classify this skill?">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Project Modal -->
+                                <div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Add a Project Detail</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" asp-page-handler="Project">
+                                                    <div class="form-group">
+                                                        <label for="name">Title</label>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="What was the project named?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="supervisor">Supervisor</label>
+                                                        <input type="text" class="form-control" id="supervisor" name="supervisor" placeholder="Did anyone supervise you?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="company">Company/School</label>
+                                                        <input type="text" class="form-control" id="company" name="company" placeholder="Who was it for?">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="start">Start Date</label>
+                                                        <input type="date" class="form-control" id="start" name="start" placeholder="YYYY-MM-DD">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="end">End Date</label>
+                                                        <input type="date" class="form-control" id="end" name="end" placeholder="YYYY-MM-DD (leave empty for current projects)">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="summary">Summary</label>
+                                                        <textarea class="form-control" id="summary" name="summary" placeholder="Give a summary of your project here!"></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>

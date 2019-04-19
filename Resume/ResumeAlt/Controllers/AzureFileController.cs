@@ -44,6 +44,16 @@ namespace Resume.Controllers
             return await file.OpenReadAsync();
         }
 
+        public async Task<string> GetFile(FileType type, string fileName)
+        {
+            CloudFileShare fileShare = cloud.CreateCloudFileClient().GetShareReference(type.ToString().ToLower());
+            CloudFileDirectory root = fileShare.GetRootDirectoryReference();
+            CloudFile file = root.GetFileReference(Path.GetFileNameWithoutExtension(fileName));
+            string path = $"/data/Resume/OutputDocument-{Guid.NewGuid()}.docx";
+            await file.DownloadToFileAsync(path, FileMode.Create);
+            return path;
+        }
+
         /// <summary>
         /// Uploads the file.
         /// </summary>

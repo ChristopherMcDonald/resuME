@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
+using Resume.Controllers;
 using Resume.Models;
 
 namespace Resume.Pages.Home
@@ -13,7 +14,11 @@ namespace Resume.Pages.Home
     {
         private readonly Models.AppContext context;
 
-        public User CurrentUser { get; set; }
+        public Resume.Models.User CurrentUser { get; set; }
+
+        public string Error { get; set; }
+
+        public string Success { get; set; }
 
         /// <summary>
         /// List of (Links,LinkText)
@@ -29,6 +34,8 @@ namespace Resume.Pages.Home
 
         public ActionResult OnGet()
         {
+            this.Success = string.Empty;
+            this.Error = string.Empty;
             string userEmail = this.HttpContext.User.Identity.Name;
             if (string.IsNullOrEmpty(userEmail))
             {
@@ -47,8 +54,10 @@ namespace Resume.Pages.Home
             }
         }
 
-        public ActionResult OnPost(UserChangeRequest changeRequest)
+        public async Task<ActionResult> OnPost(UserChangeRequest changeRequest)
         {
+            this.Success = string.Empty;
+            this.Error = string.Empty;
             string userEmail = this.HttpContext.User.Identity.Name;
             if (string.IsNullOrEmpty(userEmail))
             {
@@ -63,7 +72,88 @@ namespace Resume.Pages.Home
             else
             {
                 context.Entry(this.CurrentUser).Collection(u => u.UserInfo).Load();
-                return OnGet();
+
+                string res = string.Empty;
+
+                if (!string.IsNullOrEmpty(changeRequest.AltEmail) && !DataValidator.Email(changeRequest.AltEmail, out res))
+                {
+                    this.Error = res;
+                    return Page();
+                }
+
+                if (!DataValidator.FirstName(changeRequest.FirstName, out res))
+                {
+                    this.Error = res;
+                    return Page();
+                }
+
+                if (!DataValidator.LastName(changeRequest.LastName, out res))
+                {
+                    this.Error = res;
+                    return Page();
+                }
+
+                if (!string.IsNullOrEmpty(changeRequest.Phone) && !DataValidator.PhoneNumber(changeRequest.Phone, out res))
+                {
+                    this.Error = res;
+                    return Page();
+                }
+
+                if (!string.IsNullOrEmpty(changeRequest.Web) && !DataValidator.Website(changeRequest.Web, out res))
+                {
+                    this.Error = res;
+                    return Page();
+                }
+
+                if (!string.IsNullOrEmpty(changeRequest.NewPassword))
+                {
+                    if (!DataValidator.Password(changeRequest.NewPassword, out res))
+                    {
+                        this.Error = res;
+                        return Page();
+                    }
+
+                    if (PasswordHelper.Check(this.CurrentUser, changeRequest.OldPassword))
+                    {
+                        this.CurrentUser.PasswordHash = PasswordHelper.Hash(changeRequest.NewPassword);
+                    }
+                    else
+                    {
+                        this.Error = "Old password provided is not correct.";
+                        return Page();
+                    }
+                }
+
+                this.CurrentUser.FirstName = changeRequest.FirstName;
+                this.CurrentUser.LastName = changeRequest.LastName;
+
+                if (!this.CurrentUser.UserInfo.Any())
+                {
+                    UserInfo info = new UserInfo()
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = this.CurrentUser.ID,
+                        AltEmail = changeRequest.AltEmail,
+                        NameExt = changeRequest.NameExt,
+                        PhoneNumber = changeRequest.Phone,
+                        Summary = changeRequest.Summary,
+                        Website = changeRequest.Web
+                    };
+
+                    this.CurrentUser.UserInfo.Add(info);
+                }
+                else
+                {
+                    this.CurrentUser.UserInfo.First().AltEmail = changeRequest.AltEmail;
+                    this.CurrentUser.UserInfo.First().NameExt = changeRequest.NameExt;
+                    this.CurrentUser.UserInfo.First().PhoneNumber = changeRequest.Phone;
+                    this.CurrentUser.UserInfo.First().Summary = changeRequest.Summary;
+                    this.CurrentUser.UserInfo.First().Website = changeRequest.Web;
+                }
+
+                this.Success = "Changes have been save successfully.";
+                await context.SaveChangesAsync();
+                return Page();
             }
         }
     }

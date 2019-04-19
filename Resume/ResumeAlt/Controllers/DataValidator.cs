@@ -32,7 +32,7 @@ namespace Resume.Controllers
 
         public static bool Password(string pass, out string res) 
         {
-            if (string.IsNullOrEmpty(pass) || (!new Regex(@"[0-9]+").IsMatch(pass) || !new Regex(@"[A-Z]+").IsMatch(pass) || !new Regex(@".{6,}").IsMatch(pass)))
+            if (!new Regex(@"[0-9]+").IsMatch(pass) || !new Regex(@"[A-Z]+").IsMatch(pass) || !new Regex(@".{6,}").IsMatch(pass))
             {
                 res = "Password must have 6 characters, an upper case letter and a number.";
                 return false;
